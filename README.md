@@ -2,7 +2,7 @@
 SwiftScribe is an innovative web application that automatically transcribes and summarizes video content, making it easily digestible and accessible. This GitHub repository contains the source code for SwiftScribe, enabling developers to contribute to its development, customize its features, and collaborate on its improvement.
 
 # Key Features:
-**Video uploading and processing:** Users can upload videos, and the application will extract the audio for transcription and summarization.
+**Video uploading and processing:** Users can upload videos, and the application will extract the audio for transcription and summarization.\n
 **Speech-to-text transcription:** The application utilizes the Whispers AI model from Hugging Face to convert audio into accurate text transcriptions.
 **Text summarization:** Using the BART AI model from Hugging Face, the application generates concise summaries of the transcribed text.
 **Multi-language support:** SwiftScribe automatically detects the language of the video's audio track and applies the appropriate transcription and summarization models.
