@@ -17,5 +17,5 @@ SwiftScribe is an innovative web application that automatically transcribes and 
 **AI Models:** Whispers (Hugging Face) for speech-to-text transcription, BART (Hugging Face) for text summarization  
 **Deployment:** Amazon EC2, Vercel  
 
-### Note:
+## Note:
 For a complete understanding of the project and its functionalities, please refer to the project's documentation and codebase.  
