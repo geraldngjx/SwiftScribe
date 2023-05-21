@@ -1,0 +1,12 @@
+{
+  "name": "swiftscribe",
+  "version": "1.0.0",
+  "description": "SwiftScribe is an innovative web application that automatically transcribes and summarizes video content, making it easily digestible and accessible. This GitHub repository contains the source code for SwiftScribe, enabling developers to contribute to its development, customize its features, and collaborate on its improvement.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
