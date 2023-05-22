@@ -21,12 +21,10 @@ jobs:
         with:
           node-version: 14
 
-      - name: Change to Frontend directory
-        run: cd Frontend
-
-      - name: In
-      stall dependencies
+      - name: Install dependencies
         run: npm ci
+        working-directory: Frontend
 
-      - name: Start application
+      - name: See if dashboard works
         run: npm start
+        working-directory: Frontend
