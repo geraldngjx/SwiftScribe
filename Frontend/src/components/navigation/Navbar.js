@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { auth } from "../..firebase/config/firebase";
+import { auth } from "../../config/firebase";
 import {
   AiOutlineDashboard,
   AiOutlineUpload,
