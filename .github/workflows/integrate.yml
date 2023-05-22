@@ -26,5 +26,5 @@ jobs:
         working-directory: Frontend
 
       - name: See if dashboard works
-        run: npm start
+        run: npm run dev
         working-directory: Frontend
