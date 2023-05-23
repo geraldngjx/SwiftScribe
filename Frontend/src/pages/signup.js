@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
+
+import backgroundImage from '../../public/main-background.jpg';
 
 const Signup = () => {
   const { user, signup } = useAuth();
@@ -27,11 +31,30 @@ const Signup = () => {
   };
 
   return (
-    <div className="bg-gray-200 h-screen">
+    <div 
+      className="bg-gray-200 h-screen"
+      style={{
+        backgroundImage: `url(${backgroundImage.src})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        opacity: 0.9,
+      }}
+    >
       <div className="flex justify-center items-center h-screen">
-        <div className="bg-gray-800 w-full max-w-md rounded-lg shadow-lg">
-          <div className="py-8 px-8 rounded-lg">
-            <h1 className="text-3xl font-bold mb-8 text-green-500 text-center">
+        <div className="bg-gray-900 w-full max-w-md pt-8 rounded-lg shadow-lg">
+          <div className="flex justify-center p-4">
+            <Image
+              src="/logo.png"
+              alt="SwiftScribe Logo"
+              className="dark:invert"
+              width={300}
+              height={200}
+              priority
+            />
+          </div>
+          <div className="px-8 pb-8 rounded-lg">
+            <h1 className="text-2xl font-bold mb-8 text-green-500 text-center">
               Create Account
             </h1>
             <form onSubmit={handleSignup}>
@@ -91,11 +114,12 @@ const Signup = () => {
               <p className="text-gray-400 text-sm font-medium">
                 Already have an account?{" "}
               </p>
-              <a href="/signin">
-                <a className="text-green-500 hover:text-green-600 font-bold">
-                  Sign in
-                </a>
-              </a>
+              <Link
+                href="/signin"
+                className="text-green-500 hover:text-green-600 font-bold"
+              >
+                Sign in
+              </Link>
             </div>
           </div>
         </div>
