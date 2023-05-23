@@ -75,15 +75,15 @@ const Navbar = ({ children }) => {
           </div>
         </div>
         {loggedIn && (
-        <div className="p-2">
-          <button
-            className="w-full rounded-md bg-gray-700 text-gray-200 hover:bg-gray-600 py-2"
-            onClick={handleSignOut}
-          >
-            Sign out
-          </button>
-        </div>
-      )}
+          <div className="p-2">
+            <button
+              className="w-full rounded-md bg-gray-700 text-gray-200 hover:bg-gray-600 py-2"
+              onClick={handleSignOut}
+            >
+              Sign out
+            </button>
+          </div>
+        )}
       </div>
       <div className="ml-20 w-full">{children}</div>
     </div>
