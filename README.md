@@ -2,7 +2,7 @@
 SwiftScribe is an innovative web application that automatically transcribes and summarizes video content, making it easily digestible and accessible. This GitHub repository contains the source code for SwiftScribe, enabling developers to contribute to its development, customize its features, and collaborate on its improvement. 
 
 ## Live Deployment:
-**URL:** https://swift-scribe.vercel.app/
+https://swift-scribe.vercel.app/
 
 ## Key Features:
 **Video uploading and processing:** Users can upload videos, and the application will extract the audio for transcription and summarization.  
