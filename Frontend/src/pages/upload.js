@@ -1,64 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import VideoFile from "../../public/5607.mp4"; // Import the video file
 
 const UploadPage = () => {
   const mockTranscribedText = "This is a sample transcribed text.";
   const [transcribedText, setTranscribedText] = useState(mockTranscribedText);
   const [fileName, setFileName] = useState("");
-  const [jobID, setJobID] = useState(null);
 
   const handleClear = () => {
     setTranscribedText("");
     setFileName("");
   };
 
-  const handleExtract = async () => {
-    try {
-      const videoFilePath = "../../../public/5607.mp4"; //this is from extract.js perspective
-      const response = await fetch("/api/extract", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ videoFilePath: videoFilePath }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const { jobID } = await response.json();
-      console.log(jobID + " This is the jobID");
-
-      setJobID(jobID);
-    } catch (error) {
-      console.error(
-        "Sorry, we are unable to transcribe your video at the moment:",
-        error
-      );
-    }
+  const handleExtract = () => {
+    // Logic to extract audio file and transcribe text
+    // Update the 'transcribedText' state with the transcribed text
   };
-
-  useEffect(() => {
-    if (!jobID) return;
-
-    const eventSource = new EventSource(`/api/extract?id=${jobID}`);
-
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log(data);
-      if (data.transcribedText) {
-        setTranscribedText(data.transcribedText);
-        console.log(data.transcribedText);
-      }
-    };
-    eventSource.onerror = (error) => {
-      console.error("EventSource failed:", error);
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [jobID]);
 
   const handleSave = () => {
     // Logic to save the transcribed text with the specified file name
