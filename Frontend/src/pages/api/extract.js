@@ -17,8 +17,8 @@ export default function handler(req, res) {
       const scriptPath = "../main.py";
 
       const pythonProcess = spawn("python3", [
-        "../main.py", //from root SwiftScribe's perspective somehow
-        "videoFile", //from extract.js's perspective
+        "../main.py", //from root Frontend's perspective somehow
+        videoFile, //from extract.js's perspective
         "transcribe_local_audio",
       ]);
       console.log("loading");
