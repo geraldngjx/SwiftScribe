@@ -14,6 +14,8 @@ export default function handler(req, res) {
     case "POST":
       // Get the video file from the request body
       // const videoFile = req.body.videoFilePath;
+      const videoFileName = "5607.mp4";
+
       const videoFilePath = `${process.env.VIDEO_BASE_PATH}/${videoFileName}`;
 
       const jobID = uuidv4(); // generate a unique job ID
