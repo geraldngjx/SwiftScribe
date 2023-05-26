@@ -2,6 +2,8 @@ import { spawn } from "child_process";
 import EventEmitter from "events";
 import { v4 as uuidv4 } from "uuid";
 
+require("dotenv").config();
+
 const eventEmitter = new EventEmitter();
 const transcriptionResults = {}; // Store transcribed text results
 
@@ -11,14 +13,20 @@ export default function handler(req, res) {
   switch (method) {
     case "POST":
       // Get the video file from the request body
-      const videoFile = req.body.videoFilePath;
+      // const videoFile = req.body.videoFilePath;
+      const videoFileName = "5607.mp4";
+
+      const videoFilePath = `${process.env.VIDEO_BASE_PATH}/${videoFileName}`;
+
+      console.log(videoFilePath);
+      console.log("helo");
       const jobID = uuidv4(); // generate a unique job ID
 
       const scriptPath = "../main.py";
 
       const pythonProcess = spawn("python3", [
-        "../main.py", //from root Frontend's perspective somehow
-        "./public/5607.mp4", //from extract.js's perspective
+        "main.py", //from root Frontend's perspective somehow
+        videoFilePath, //from Frontend's perspective
         "transcribe_local_audio",
       ]);
       console.log("loading");

@@ -31,6 +31,7 @@ const UploadPage = () => {
 
       setJobID(jobID);
     } catch (error) {
+      console.log(jobID);
       console.error(
         "Sorry, we are unable to transcribe your video at the moment:",
         error

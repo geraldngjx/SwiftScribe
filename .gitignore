@@ -1,3 +1,4 @@
 /Frontend/node_modules/
 /Frontend/.next/
 /node_modules/
+.vercel
