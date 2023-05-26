@@ -1,3 +1,4 @@
 argparse==1.4.0
 pytube==11.0.1
-whisper==0.0.1
+git+https://github.com/openai/whisper.git
+ffmpeg-python==0.2.0
