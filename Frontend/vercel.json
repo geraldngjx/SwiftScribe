@@ -13,13 +13,5 @@
   ],
   "env": {
     "FFMPEG_INSTALL": "true"
-  },
-  "install": [
-    {
-      "include": ["requirements.txt"]
-    },
-    {
-      "include": ["ffmpeg_install.sh"]
-    }
-  ]
+  }
 }
