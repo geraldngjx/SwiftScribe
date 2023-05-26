@@ -18,6 +18,8 @@ export default function handler(req, res) {
 
       const videoFilePath = `${process.env.VIDEO_BASE_PATH}/${videoFileName}`;
 
+      console.log(videoFilePath);
+      console.log("helo");
       const jobID = uuidv4(); // generate a unique job ID
 
       const scriptPath = "../main.py";
