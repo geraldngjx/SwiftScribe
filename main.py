@@ -8,10 +8,10 @@ import whisper
 def transcribe_local_audio(file_path):
     # Check if the file exists
     if not os.path.exists(file_path):
-        print(file_path)
+        # print(file_path)
         return "File not found"
 
-    print(f"Transcribing local audio file: {file_path}")
+    # print(f"Transcribing local audio file: {file_path}")
 
     # Load the whisper model
     model = whisper.load_model("base")
@@ -20,10 +20,10 @@ def transcribe_local_audio(file_path):
     result = model.transcribe(file_path)
 
     # Print the transcription
-    print(result["text"])
+    # print(result["text"])
 
     # Remove the original file
-    os.remove(file_path)
+    # os.remove(file_path)
 
     return result["text"]
 
