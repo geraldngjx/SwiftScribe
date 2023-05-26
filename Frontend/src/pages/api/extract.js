@@ -18,7 +18,7 @@ export default function handler(req, res) {
 
       const pythonProcess = spawn("python3", [
         "../main.py", //from root Frontend's perspective somehow
-        "./public/5607.mp4", //from extract.js's perspective
+        "./public/5607.mp4", //from Frontend's perspective
         "transcribe_local_audio",
       ]);
       console.log("loading");
