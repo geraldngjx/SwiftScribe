@@ -1,4 +1,22 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "main.py",
+      "use": "@vercel/python",
+      "config": {
+        "commands": [
+          {
+            "command": "apt-get install -y ffmpeg",
+            "cwd": "/var/task"
+          }
+        ]
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "api/main.py" }
+  ],
   "env": {
     "FFMPEG_INSTALL": "true"
   }
