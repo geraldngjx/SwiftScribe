@@ -80,7 +80,7 @@ const UploadPage = () => {
       <h1 className="text-4xl font-bold py-8">Upload Media</h1>
 
       <div className="video-upload-container flex items-center justify-center mx-auto">
-        <div className="video-container w-7/10 bg-gray-300 rounded-l-lg overflow-hidden">
+        <div className="video-container w-7/10 bg-gray-900 rounded-l-lg overflow-hidden">
           <video
             src={VideoFile}
             controls
@@ -88,7 +88,7 @@ const UploadPage = () => {
           ></video>
         </div>
         <div className="panel-container w-3/10">
-          <div className="panel bg-gray-300 p-4 h-96 flex flex-col justify-center items-center rounded-r-lg">
+          <div className="panel bg-gray-700 p-4 h-96 flex flex-col justify-center items-center rounded-r-lg">
             <div className="w-full mb-8">
               <button
                 className={`w-full px-4 py-2 ${
@@ -113,7 +113,7 @@ const UploadPage = () => {
         </div>
       </div>
 
-      <div className="text-transcription-container bg-gray-300 mt-8 mb-8 p-4 rounded-lg">
+      <div className="text-transcription-container bg-gray-700 mt-8 mb-8 p-4 rounded-lg">
         <input
           type="text"
           className="w-full p-2 border border-black rounded-md mb-4"
@@ -154,11 +154,11 @@ const UploadPage = () => {
       {isNotificationOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div
-            className={`bg-white rounded-lg p-8 ${
-              notificationType === "error" ? "bg-red-500" : "bg-green-500"
-            }`}
+            className="bg-gray-700 rounded-lg p-8" 
           >
-            <h3 className="text-lg mb-4">{notificationMessage}</h3>
+            <h3 className={`text-lg ${
+              notificationType === "error" ? "text-red-500" : "text-green-500"
+            } mb-4`}>{notificationMessage}</h3>
             <div className="flex justify-center">
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg"
@@ -172,8 +172,8 @@ const UploadPage = () => {
       )}
       {isDevelopmentModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8">
-            <h3 className="text-lg mb-4">This feature is under development</h3>
+          <div className="bg-gray-700 rounded-lg p-8">
+            <h3 className="text-lg text-white mb-4">This feature is under development</h3>
             <div className="flex justify-center">
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg"

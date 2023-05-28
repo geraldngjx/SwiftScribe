@@ -75,7 +75,7 @@ const FileRow = ({ log, onDelete }) => {
             </h3>
             <div className="flex justify-center">
               <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg mr-2"
                 onClick={handleDeleteClick}
               >
                 Delete
