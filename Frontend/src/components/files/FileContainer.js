@@ -1,7 +1,13 @@
 import React from "react";
 import FileRow from "./FileRow";
 
-function FileContainer({ logs }) {
+function FileContainer({ logs, onDelete }) {
+  console.log("Logs in FileContainer: ", logs);
+  
+  const handleDelete = (log) => {
+    onDelete(log);
+  };
+
   return (
     <div
       className="bg-[#171738] rounded-lg shadow p-8 overflow-y-scroll h-full"
@@ -12,8 +18,8 @@ function FileContainer({ logs }) {
           Recent Files
         </div>
         <div>
-          {logs.map((log, index) => (
-            <FileRow key={index} log={log} />
+          {logs.map((log) => (
+            <FileRow key={log._id} log={log} onDelete={handleDelete} />
           ))}
         </div>
       </div>
