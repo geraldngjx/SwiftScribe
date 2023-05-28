@@ -92,8 +92,8 @@ const FileRow = ({ log, onDelete }) => {
       )}
       {isDevelopmentModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-lg p-8">
-            <h3 className="text-lg text-white mb-4">This feature is under development</h3>
+          <div className="bg-white rounded-lg p-8">
+            <h3 className="text-lg mb-4">This feature is under development</h3>
             <div className="flex justify-center">
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg"
