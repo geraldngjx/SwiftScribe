@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from "next/router";
 import { useAuth } from "../context/AuthContext";
 
-import backgroundImage from "../../public/main-background.jpg";
+import backgroundImage from '../../public/main-background.jpg';
 
 const SignIn = () => {
   const router = useRouter();
@@ -16,40 +16,40 @@ const SignIn = () => {
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+      e.preventDefault();
 
-    console.log(user);
-    try {
-      await login(data.email, data.password);
-      router.push("/");
-    } catch (err) {
-      setError("Invalid Email or Password");
-      console.log(err);
-    }
+      console.log(user);
+      try {
+        await login(data.email, data.password);
+        router.push("/");
+      } catch (err) {
+        setError("Invalid Email or Password");
+        console.log(err);
+      }
   };
 
   return (
-    <div
+    <div 
       className="bg-gray-200 h-screen"
       style={{
         backgroundImage: `url(${backgroundImage.src})`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         opacity: 0.9,
       }}
     >
       <div className="flex justify-center items-center h-screen">
         <div className="bg-gray-900 w-full max-w-md pt-8 rounded-lg shadow-lg">
           <div className="flex justify-center p-4">
-            <Image
-              src="/logo.png"
-              alt="SwiftScribe Logo"
-              className="dark:invert"
-              width={300}
-              height={200}
-              priority
-            />
+          <Image
+                  src="/logo.png"
+                  alt="SwiftScribe Logo"
+                  className="dark:invert"
+                  width={300}
+                  height={200}
+                  priority
+                />
           </div>
           <div className="px-8 pb-8 rounded-lg">
             <h1 className="text-2xl font-bold mb-8 text-green-500 text-center">
@@ -76,7 +76,7 @@ const SignIn = () => {
                   className="appearance-none border rounded w-full py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
                 />
               </div>
-
+              
               <div className="mb-4">
                 <label
                   htmlFor="password"

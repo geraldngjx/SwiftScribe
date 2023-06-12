@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "cypress": "cypress open"
+    "lint": "next lint"
   },
   "dependencies": {
     "autoprefixer": "10.4.14",
@@ -27,6 +26,6 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "cypress": "^12.14.0"
+    "file-loader": "^6.2.0"
   }
 }
