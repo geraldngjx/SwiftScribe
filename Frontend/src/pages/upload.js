@@ -59,6 +59,9 @@ const UploadPage = () => {
       // console.log(data.jobID); // Logging the jobID from server
 
       setTranscribedText(data.message);
+
+      //we want to send the transcribed text out so that we can summarise it
+
       setIsLoading(false);
     } catch (error) {
       console.error("Error while extracting:", error);
