@@ -38,24 +38,22 @@ const UploadPage = () => {
   const handleExtract = async () => {
     setIsLoading(true);
 
-    // Define your video file here or retrieve it from state or props
-    let videoFile = VideoFile; // Assign the imported video file
+    let videoFile = VideoFile; //Change this to the actual file that the user uploads
 
-    // Create FormData to hold the video file
     let formData = new FormData();
     formData.append("video", videoFile);
 
     try {
       const response = await fetch("/api/extract", {
         method: "POST",
-        body: formData, // attach FormData instance to the body
+        body: formData,
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json(); // assuming your server replies with json
+      const data = await response.json();
 
       console.log(data.message); // Logging the response message from server
       // console.log(data.jobID); // Logging the jobID from server
