@@ -55,10 +55,10 @@ const UploadPage = () => {
 
       const data = await response.json();
 
-      console.log(data.message); // Logging the response message from server
+      console.log(data.summary); // Logging the response message from server
       // console.log(data.jobID); // Logging the jobID from server
 
-      setTranscribedText(data.message);
+      setTranscribedText(data.summary);
 
       //we want to send the transcribed text out so that we can summarise it
 

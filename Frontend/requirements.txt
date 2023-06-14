@@ -2,5 +2,4 @@ fastapi==0.68.1
 pydantic==1.8.2
 transformers==4.11.3
 uvicorn==0.15.0
-whisper==1.0.2
-tensorflow==2.0
+git+https://github.com/openai/whisper.git
