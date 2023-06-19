@@ -24,15 +24,48 @@ const UploadPage = () => {
     setFileName("");
   };
 
-  const handleExtract = () => {
+  // const handleExtract = () => {
+  //   setIsLoading(true);
+
+  //   setTimeout(() => {
+  //     setTranscribedText(
+  //       "Our aim is to create a tool that makes video content more accessible and useful for a wide range of users. So try SwiftScribe today and experience the time-saving benefits for yourself."
+  //     );
+  //     setIsLoading(false);
+  //   }, 3000);
+  // };
+
+  const handleExtract = async () => {
     setIsLoading(true);
 
-    setTimeout(() => {
-      setTranscribedText(
-        "Our aim is to create a tool that makes video content more accessible and useful for a wide range of users. So try SwiftScribe today and experience the time-saving benefits for yourself."
-      );
+    let videoFile = VideoFile; //Change this to the actual file that the user uploads
+
+    let formData = new FormData();
+    formData.append("video", videoFile);
+
+    try {
+      const response = await fetch("/api/extract", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      console.log(data.summary); // Logging the response message from server
+      // console.log(data.jobID); // Logging the jobID from server
+
+      setTranscribedText(data.summary);
+
+      //we want to send the transcribed text out so that we can summarise it
+
       setIsLoading(false);
-    }, 3000);
+    } catch (error) {
+      console.error("Error while extracting:", error);
+    }
   };
 
   const handleSave = async () => {
@@ -153,12 +186,14 @@ const UploadPage = () => {
       </div>
       {isNotificationOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div
-            className="bg-gray-700 rounded-lg p-8" 
-          >
-            <h3 className={`text-lg ${
-              notificationType === "error" ? "text-red-500" : "text-green-500"
-            } mb-4`}>{notificationMessage}</h3>
+          <div className="bg-gray-700 rounded-lg p-8">
+            <h3
+              className={`text-lg ${
+                notificationType === "error" ? "text-red-500" : "text-green-500"
+              } mb-4`}
+            >
+              {notificationMessage}
+            </h3>
             <div className="flex justify-center">
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg"
@@ -173,7 +208,9 @@ const UploadPage = () => {
       {isDevelopmentModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-gray-700 rounded-lg p-8">
-            <h3 className="text-lg text-white mb-4">This feature is under development</h3>
+            <h3 className="text-lg text-white mb-4">
+              This feature is under development
+            </h3>
             <div className="flex justify-center">
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg"
