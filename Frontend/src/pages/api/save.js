@@ -1,5 +1,5 @@
 import connectMongo from "../../utils/connectMongo";
-import File from "../../models/fileModel";
+import File from "../../models/file";
 
 export default async function addFile(req, res) {
   try {
@@ -10,10 +10,11 @@ export default async function addFile(req, res) {
     const body = req.body;
 
     const file = new File({ 
+      uid: body.uid,
       name: body.name,
       length: body.length,
       content: body.content
-     });
+    });
 
     await file
       .save()

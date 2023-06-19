@@ -1,5 +1,5 @@
 import connectMongo from "../../utils/connectMongo";
-import File from "../../models/fileModel";
+import File from "../../models/file";
 
 export default async function deleteFile(req, res) {
   try {
