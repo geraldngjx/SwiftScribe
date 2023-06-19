@@ -29,20 +29,23 @@ const UploadPage = () => {
 
   const handleExtract = async () => {
     setIsLoading(true);
-  
+
     try {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
-  
-      const response = await fetch("https://99d8-119-74-197-129.ngrok-free.app/media/extract", {
-        method: "POST",
-        body: formData,
-      });
-  
+
+      const response = await fetch(
+        "https://99d8-119-74-197-129.ngrok-free.app/media/extract",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       console.log(data);
       setTranscribedText(data.transcript);
@@ -54,7 +57,7 @@ const UploadPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
 
   const handleSave = async () => {
     if (fileName === "") {
@@ -99,10 +102,10 @@ const UploadPage = () => {
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
-  
+
     if (file) {
       setFileName(file.name);
-  
+
       const videoURL = URL.createObjectURL(file);
       setVideoSource(videoURL);
     }
@@ -118,7 +121,11 @@ const UploadPage = () => {
 
       <div className="video-upload-container flex items-center justify-center mx-auto">
         <div className="video-container w-7/10 bg-gray-900 rounded-l-lg overflow-hidden">
-          <video src={videoSource} controls className="w-full h-96 py-8 pl-8 pr-4"></video>
+          <video
+            src={videoSource}
+            controls
+            className="w-full h-96 py-8 pl-8 pr-4"
+          ></video>
         </div>
         <div className="panel-container w-3/10">
           <div className="panel bg-gray-700 p-4 h-96 flex flex-col justify-center items-center rounded-r-lg">
