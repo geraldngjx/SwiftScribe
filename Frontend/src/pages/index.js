@@ -43,13 +43,15 @@ function Dashboard() {
   console.log("logs:", logs);
 
   return (
-    <main className="h-screen pl-8 pr-12 bg-white">
-      <h1 className="text-4xl font-bold py-8">My Dashboard</h1>
-      <div className="flex justify-between mb-8">
+    <main className="h-screen bg-white">
+      <h1 className="text-4xl font-bold p-8">My Dashboard</h1>
+      <div className="flex justify-between pl-8 pr-12">
         <StatisticsContainer title="Documents Summarised" value={fileCount.toString()} />
         <StatisticsContainer title="Total Storage Used (GB)" value="Under Development" />
       </div>
-      <FileContainer logs={logs} onDelete={deleteFile} />
+      <div className="bg-white p-8">
+        <FileContainer logs={logs} onDelete={deleteFile} />
+      </div>
     </main>
   );
 }
