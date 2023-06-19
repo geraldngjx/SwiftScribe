@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const UploadPage = () => {
   const mockTranscribedText = "This is a sample transcribed text.";
@@ -11,6 +12,7 @@ const UploadPage = () => {
   const [notificationType, setNotificationType] = useState("");
   const fileInputRef = useRef(null);
   const [videoSource, setVideoSource] = useState("");
+  const { user } = useAuth();
 
   const handleDevelopmentModal = () => {
     setIsDevelopmentModalOpen(true);
@@ -69,6 +71,7 @@ const UploadPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          uid: user.uid,
           name: fileName,
           content: transcribedText,
           length: transcribedText.split(" ").length,

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 
 const FileRow = ({ log, onDelete }) => {
   const { name, length, date, _id } = log;
@@ -11,10 +12,6 @@ const FileRow = ({ log, onDelete }) => {
 
   const closeDevelopmentModal = () => {
     setIsDevelopmentModalOpen(false);
-  };
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
   };
 
   const handleDeleteClick = () => {
@@ -52,17 +49,16 @@ const FileRow = ({ log, onDelete }) => {
         <div className="text-white">{formatDate(date)}</div>
       </div>
       <div className="w-1/8">
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-          onClick={handleDevelopmentModal}
-        >
-          Open
-        </button>
+        <Link href={`/edit/${_id}`}>
+          <div className="px-4 py-2 bg-blue-500 text-white rounded-lg">
+            Open
+          </div>
+        </Link>
       </div>
       <div className="w-1/8 pr-4">
         <button
           className="px-4 py-2 bg-red-500 text-white rounded-lg"
-          onClick={handleOpenModal}
+          onClick={() => setIsModalOpen(true)}
         >
           Delete
         </button>

@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
 import StatisticsContainer from "../components/files/StatisticsContainer";
 import FileContainer from "../components/files/FileContainer";
+import { useAuth } from "../context/AuthContext";
 
 function Dashboard() {
   const [logs, setLogs] = useState([]);
   const [fileCount, setFileCount] = useState(0);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await fetch("/api/files");
+        const response = await fetch("/api/files", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uid: user.uid,
+          }),
+        });
         const data = await response.json();
+        console.log("DATA: " + data);
         setLogs(data.files);
         setFileCount(data.files.length);
       } catch (error) {
