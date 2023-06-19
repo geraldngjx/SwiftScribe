@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import VideoFile from "../../public/5607.mp4"; // Import the video file
+import React, { useState, useRef } from "react";
 
 const UploadPage = () => {
   const mockTranscribedText = "This is a sample transcribed text.";
@@ -9,7 +8,9 @@ const UploadPage = () => {
   const [isDevelopmentModalOpen, setIsDevelopmentModalOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [notificationType, setNotificationType] = useState(""); // Added state for notification type
+  const [notificationType, setNotificationType] = useState("");
+  const fileInputRef = useRef(null);
+  const [videoSource, setVideoSource] = useState("");
 
   const handleDevelopmentModal = () => {
     setIsDevelopmentModalOpen(true);
@@ -24,16 +25,34 @@ const UploadPage = () => {
     setFileName("");
   };
 
-  const handleExtract = () => {
+  const handleExtract = async () => {
     setIsLoading(true);
-
-    setTimeout(() => {
-      setTranscribedText(
-        "Our aim is to create a tool that makes video content more accessible and useful for a wide range of users. So try SwiftScribe today and experience the time-saving benefits for yourself."
-      );
+  
+    try {
+      const formData = new FormData();
+      formData.append("video", fileInputRef.current.files[0]);
+  
+      const response = await fetch("https://99d8-119-74-197-129.ngrok-free.app/media/extract", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log(data);
+      setTranscribedText(data.transcript);
+    } catch (error) {
+      console.error("Error while uploading and extracting audio:", error);
+      setNotificationMessage("Failed to extract audio.");
+      setNotificationType("error");
+      setIsNotificationOpen(true);
+    } finally {
       setIsLoading(false);
-    }, 3000);
-  };
+    }
+  };  
 
   const handleSave = async () => {
     if (fileName === "") {
@@ -44,7 +63,7 @@ const UploadPage = () => {
     }
 
     try {
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/save", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,6 +90,21 @@ const UploadPage = () => {
     }
   };
 
+  const handleUpload = () => {
+    fileInputRef.current.click(); // Trigger the file selection dialog
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+  
+    if (file) {
+      setFileName(file.name);
+  
+      const videoURL = URL.createObjectURL(file);
+      setVideoSource(videoURL);
+    }
+  };
+
   const closeNotification = () => {
     setIsNotificationOpen(false);
   };
@@ -81,11 +115,7 @@ const UploadPage = () => {
 
       <div className="video-upload-container flex items-center justify-center mx-auto">
         <div className="video-container w-7/10 bg-gray-900 rounded-l-lg overflow-hidden">
-          <video
-            src={VideoFile}
-            controls
-            className="w-full h-96 py-8 pl-8 pr-4"
-          ></video>
+          <video src={videoSource} controls className="w-full h-96 py-8 pl-8 pr-4"></video>
         </div>
         <div className="panel-container w-3/10">
           <div className="panel bg-gray-700 p-4 h-96 flex flex-col justify-center items-center rounded-r-lg">
@@ -104,7 +134,7 @@ const UploadPage = () => {
               <button
                 className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
                 disabled={isLoading}
-                onClick={handleDevelopmentModal}
+                onClick={handleUpload}
               >
                 Upload
               </button>
@@ -185,6 +215,13 @@ const UploadPage = () => {
           </div>
         </div>
       )}
+      <input
+        type="file"
+        accept="video/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileSelect}
+      />
     </div>
   );
 };
