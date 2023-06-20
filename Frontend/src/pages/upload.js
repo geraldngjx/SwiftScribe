@@ -116,7 +116,7 @@ const UploadPage = () => {
   };
 
   return (
-    <div className="upload-page px-8 bg-gray-100">
+    <div className="upload-page px-8">
       <h1 className="text-4xl font-bold py-8">Upload Media</h1>
 
       <div className="video-upload-container flex items-center justify-center mx-auto">
