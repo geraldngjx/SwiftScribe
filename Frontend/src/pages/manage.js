@@ -58,7 +58,7 @@ const FileManagementPage = () => {
   );
 
   return (
-    <main className="h-screen bg-white">
+    <main className="h-screen">
       <h1 className="text-4xl font-bold p-8">File Management</h1>
       <div className="px-8">
         <input

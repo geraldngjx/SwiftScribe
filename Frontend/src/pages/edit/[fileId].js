@@ -69,7 +69,7 @@ const EditPage = () => {
   };
 
   return (
-    <div className="edit-page h-screen px-8 bg-gray-100">
+    <div className="edit-page h-screen px-8">
       <h1 className="text-4xl font-bold py-8">Edit Document</h1>
 
       <div className="text-transcription-container bg-gray-700 mb-8 p-4 rounded-lg">
