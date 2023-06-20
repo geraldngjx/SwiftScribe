@@ -1,9 +1,9 @@
 describe("Upload Page", () => {
   beforeEach(() => {
-    cy.visit("https://swift-scribe.vercel.app/signup");
+    cy.visit("https://swift-scribe.vercel.app/signin");
 
-    cy.get('input[type="email"]').type("test@example.com");
-    cy.get('input[type="password"]').type("password123");
+    cy.get('input[type="email"]').type("ryantzr@gmail.com");
+    cy.get('input[type="password"]').type("testing12345");
 
     cy.get('button[type="submit"]').click();
 
