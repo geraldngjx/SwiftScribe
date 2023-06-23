@@ -134,7 +134,11 @@ const UploadPage = () => {
 
       <div className="video-upload-container flex items-center justify-center mx-auto">
         <div className="video-container w-7/10 bg-gray-900 rounded-l-lg overflow-hidden">
-          <video src={videoSource} controls className="w-full h-96 py-8 pl-8 pr-4"></video>
+          <video
+            src={videoSource}
+            controls
+            className="w-full h-96 py-8 pl-8 pr-4"
+          ></video>
         </div>
         <div className="panel-container w-3/10">
           <div className="panel bg-gray-700 p-4 h-96 flex flex-col justify-center items-center rounded-r-lg">
