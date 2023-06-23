@@ -32,13 +32,13 @@ def transcribe_local_audio(file_path):
 def transcribe_local(source: Source):
     return transcribe_local_audio(source.source)
 
-# summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
-# @app.post("/summarize")
-# def summarize_text(data: TextData):
-#     summary = summarizer(data.text, max_length=130, min_length=30, do_sample=False)
+@app.post("/summarize")
+def summarize_text(data: TextData):
+    summary = summarizer(data.text, max_length=130, min_length=10, do_sample=False)
 
-#     return {"summary": summary[0]["summary_text"]}
+    return {"summary": summary[0]["summary_text"]}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

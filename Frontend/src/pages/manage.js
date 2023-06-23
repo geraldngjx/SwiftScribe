@@ -63,7 +63,7 @@ const FileManagementPage = () => {
       <div className="px-8">
         <input
           type="text"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          className="w-full px-3 py-2 border border-gray-700 rounded-md"
           placeholder="Search by name"
           value={searchQuery}
           onChange={handleSearch}
