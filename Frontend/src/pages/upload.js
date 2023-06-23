@@ -45,7 +45,7 @@ const UploadPage = () => {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
 
-      const response = await fetch("https://fd25-119-74-197-129.ngrok-free.app/media/extract", {
+      const response = await fetch("https://8504-119-74-197-129.ngrok-free.app/media/extract", {
         method: "POST",
         body: formData,
       });
