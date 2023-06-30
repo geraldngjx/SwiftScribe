@@ -58,6 +58,8 @@ const upload = multer({ storage });
 
 router.post("/extract", upload.single("video"), async (req, res) => {
   try {
+    console.log("API REQUEST RECEIVED");
+    console.log("UPLOADING FILE NOW");
     // Check if a file was uploaded
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -66,6 +68,8 @@ router.post("/extract", upload.single("video"), async (req, res) => {
     const videoFilePath = req.file.path;
 
     console.log("VIDEO FILE PATH: " + videoFilePath);
+    console.log("FILE UPLOADED SUCCESSFULLY");
+    console.log("TRANSCRIBING FILE NOW");
 
     // Make the transcription request to the local server
     const transcribeResponse = await axios.post(
@@ -75,19 +79,21 @@ router.post("/extract", upload.single("video"), async (req, res) => {
       }
     );
 
-    console.log(transcribeResponse.data);
-    console.log("Transcription done");
+    console.log("TRANSCRIPTION: " + transcribeResponse.data);
+    console.log("TRANSCRIPTION COMPLETED SUCCESSFULLY");
 
     const transcript = transcribeResponse.data;
 
-    // Summarize the transcript (if needed)
-    // const summaryResponse = await axios.post("http://127.0.0.1:8000/summarize", {
-    //   text: transcript,
-    // });
-    // const summary = summaryResponse.data.summary;
-    // console.log("Summarization done");
+    let summary = "";
 
-    const summary = "";
+    // Summarize the transcript (if needed)
+    const summaryResponse = await axios.post("http://127.0.0.1:8000/summarize", {
+      text: transcript,
+    });
+    summary = summaryResponse.data.summary;
+    console.log("SUMMARY: " + summary);
+    console.log("SUMMARISATION COMPLETED SUCCESSFULLY");
+    console.log("SENDING TEXT DATA BACK TO FRONTEND WEBSITE");
 
     // Return the transcript and summary to the client
     res.json({ transcript, summary });

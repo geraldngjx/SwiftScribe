@@ -54,7 +54,7 @@ function Dashboard() {
   console.log("logs:", logs);
 
   return (
-    <main className="h-screen bg-white">
+    <main className="h-screen">
       <h1 className="text-4xl font-bold p-8">My Dashboard</h1>
       <div className="flex justify-between pl-8 pr-12">
         <StatisticsContainer title="Documents Summarised" value={fileCount.toString()} />
