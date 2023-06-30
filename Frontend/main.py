@@ -26,7 +26,7 @@ def transcribe_local_audio(file_path):
 
 
     # Transcribe the audio
-    result = model.transcribe(file_path, , **translate_options)
+    result = model.transcribe(file_path, **translate_options)
 
     return result["text"]
 
