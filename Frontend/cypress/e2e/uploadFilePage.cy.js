@@ -45,6 +45,8 @@ describe("Upload Page", () => {
       .contains("Completed")
       .should("be.visible");
 
+    cy.get(".flex.justify-center button").contains("Close").click();
+
     // click save button
     cy.get(".text-transcription-container button").contains("Save").click();
   });
