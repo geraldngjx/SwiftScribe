@@ -12,6 +12,8 @@ describe("Upload Page", () => {
     cy.get(".nav-links").contains("Upload Media").click();
     cy.url().should("include", "/upload");
 
+    cy.visit("/");
+
     cy.get(".nav-links").contains("Manage Files").click();
     cy.url().should("include", "/manage");
   });
