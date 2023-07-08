@@ -21,9 +21,12 @@ def transcribe_local_audio(file_path):
 
     # Load the whisper model
     model = whisper.load_model("base")
+    options = dict(language="english", beam_size=5, best_of=5)
+    translate_options = dict(task="translate", **options)
+
 
     # Transcribe the audio
-    result = model.transcribe(file_path)
+    result = model.transcribe(file_path, **translate_options)
 
     return result["text"]
 
