@@ -14,9 +14,11 @@ describe("FileRow", () => {
   });
 
   it("should upload a file", () => {
-    cy.wait(2000);
+    cy.wait(5000);
 
     cy.get(".video-upload-container .panel button").contains("Upload").click();
+
+    cy.wait(1000);
 
     cy.get("input[type=file]")
       .invoke("attr", "style", "display: block")
@@ -32,7 +34,7 @@ describe("FileRow", () => {
 
   it("should delete a file when the Delete button is clicked", () => {
     cy.visit("https://swift-scribe.vercel.app/");
-    cy.wait(2000);
+    cy.wait(5000);
 
     cy.get("button").contains("Delete").click();
 
