@@ -35,11 +35,7 @@ const UploadPage = () => {
   };
 
   const handleExtract = async () => {
-    if (summarizationActive) {
-      setShowLanguageSelection(true);
-    } else {
-      await handleTranscriptionOnly();
-    }
+    setShowLanguageSelection(true);
   };
 
   const handleLanguageSelection = async () => {
@@ -73,9 +69,10 @@ const UploadPage = () => {
     try {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
+      formData.append("language", selectedLanguage); // Add language field
 
       const response = await fetch(
-        "https://8504-119-74-197-129.ngrok-free.app/media/extract",
+        "https://ae70-101-78-125-97.ngrok-free.app/media/extract",
         {
           method: "POST",
           body: formData,
@@ -83,18 +80,19 @@ const UploadPage = () => {
       );
 
       if (!response.ok) {
+        console.log("RESPONSE STATUS: " + response.status);
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
-
-      if (data.summary === "") {
-        setNotificationMessage("Transcription and Summarization Completed Successfully.");
-        setTranscribedText(data.transcript);
       } else {
-        setNotificationMessage("Transcription and Summarization Completed Successfully.");
-        setTranscribedText(data.summary);
+        const data = await response.json();
+        console.log(data);
+
+        if (data.summary === "") {
+          setNotificationMessage("Transcription and Summarization Completed Successfully.");
+          setTranscribedText(data.transcript);
+        } else {
+          setNotificationMessage("Transcription and Summarization Completed Successfully.");
+          setTranscribedText(data.summary);
+        }
       }
     } catch (error) {
       console.error("Error while uploading and extracting audio:", error);
@@ -107,24 +105,25 @@ const UploadPage = () => {
     try {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
-
+      formData.append("language", selectedLanguage);
+  
       const response = await fetch(
-        "https://8504-119-74-197-129.ngrok-free.app/media/transcription",
+        "https://ae70-101-78-125-97.ngrok-free.app/media/transcription",
         {
           method: "POST",
           body: formData,
         }
       );
-
+  
       if (!response.ok) {
+        console.log("RESPONSE STATUS: " + response.status);
         throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        const data = await response.json();
+        console.log(data);
+        setNotificationMessage("Transcription Completed Successfully.");
+        setTranscribedText(data.transcript);
       }
-
-      const data = await response.json();
-      console.log(data);
-
-      setNotificationMessage("Transcription Completed Successfully.");
-      setTranscribedText(data.transcript);
     } catch (error) {
       console.error("Error while uploading and extracting audio:", error);
       setNotificationMessage("Failed to extract audio.");
