@@ -14,25 +14,23 @@ class TextData(BaseModel):
     text: str
 
 # Function to transcribe audio from a local file
-def transcribe_local_audio(file_path):
-    # Check if the file exists
+def transcribe_local_audio(file_path, language):
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
 
     # Load the whisper model
     model = whisper.load_model("base")
-    options = dict(language="english", beam_size=5, best_of=5)
+    options = dict(language=language, beam_size=5, best_of=5)
     translate_options = dict(task="translate", **options)
 
-
-    # Transcribe the audio
+   
     result = model.transcribe(file_path, **translate_options)
 
     return result["text"]
 
 @app.post("/transcribe/local")
 def transcribe_local(source: Source):
-    return transcribe_local_audio(source.source)
+    return transcribe_local_audio(source.source, source.language)
 
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
