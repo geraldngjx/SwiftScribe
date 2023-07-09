@@ -9,6 +9,7 @@ describe("FileRow", () => {
     cy.get('input[type="password"]').type("testing12345");
 
     cy.get('button[type="submit"]').click();
+    cy.wait(5000);
 
     cy.visit("https://swift-scribe.vercel.app/upload");
   });
