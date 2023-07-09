@@ -1,4 +1,4 @@
-#this file is just for testing 
+#this file is just for testing purposes
 
 import requests
 
