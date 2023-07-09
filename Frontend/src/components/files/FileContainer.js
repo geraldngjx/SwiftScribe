@@ -3,7 +3,7 @@ import FileRow from "./FileRow";
 
 function FileContainer({ logs, onDelete }) {
   console.log("Logs in FileContainer: ", logs);
-  
+
   const handleDelete = (log) => {
     onDelete(log);
   };

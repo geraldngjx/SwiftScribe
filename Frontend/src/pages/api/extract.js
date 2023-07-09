@@ -20,6 +20,7 @@ export default async function handler(req, res) {
           "http://127.0.0.1:8000/transcribe/local",
           {
             source: videoFilePath,
+            language: "english", // @Gerald need you to change this part based on your flag
           }
         );
 
