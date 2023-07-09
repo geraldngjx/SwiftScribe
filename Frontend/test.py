@@ -1,6 +1,8 @@
+#this file is just for testing 
+
 import requests
 
-url = 'http://localhost:8000/transcribe/local'
+url = 'http://localhost:8000/transcribe/local' 
 
 # Set the file path and language for transcription
 file_path = '5607.mp4'
