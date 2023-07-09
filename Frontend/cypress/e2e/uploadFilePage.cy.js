@@ -6,11 +6,14 @@ describe("Upload Page", () => {
     cy.get('input[type="password"]').type("testing12345");
 
     cy.get('button[type="submit"]').click();
+    cy.wait(5000);
 
     cy.visit("https://swift-scribe.vercel.app/upload");
   });
 
   it("displays the upload page", () => {
+    cy.wait(2000);
+
     cy.get(".upload-page")
       .should("be.visible")
       .within(() => {
@@ -23,7 +26,11 @@ describe("Upload Page", () => {
   it("uploads a file, displays its name and performs extraction", () => {
     const fileName = "./cypress/fixtures/5607.mp4"; //this is found in the fixtures folder
     const uploadedFileName = "5607.mp4"; //this is found in the text box in our upload media page
+    cy.wait(5000);
+
     cy.get(".video-upload-container .panel button").contains("Upload").click();
+
+    cy.wait(2000);
 
     cy.get("input[type=file]")
       .invoke("attr", "style", "display: block")
