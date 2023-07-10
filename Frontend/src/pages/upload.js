@@ -72,7 +72,7 @@ const UploadPage = () => {
       formData.append("language", selectedLanguage); // Add language field
 
       const response = await fetch(
-        "https://ae70-101-78-125-97.ngrok-free.app/media/extract",
+        "https://c83a-101-78-125-97.ngrok-free.app/media/extract",
         {
           method: "POST",
           body: formData,
@@ -108,7 +108,7 @@ const UploadPage = () => {
       formData.append("language", selectedLanguage);
   
       const response = await fetch(
-        "https://ae70-101-78-125-97.ngrok-free.app/media/transcription",
+        "https://c83a-101-78-125-97.ngrok-free.app/media/transcription",
         {
           method: "POST",
           body: formData,
