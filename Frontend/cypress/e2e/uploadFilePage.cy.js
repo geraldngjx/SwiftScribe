@@ -49,7 +49,7 @@ describe("Upload Page", () => {
 
     // validate that the "In Progress" button appears, indicating that extraction is ongoing
     cy.get(".fixed.inset-0.flex.items-center.justify-center.z-50")
-      .contains("In Progress")
+      .contains("in progress")
       .should("be.visible");
 
     cy.get(".fixed.inset-0.flex.items-center.justify-center.z-50")
