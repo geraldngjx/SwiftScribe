@@ -1,35 +1,36 @@
-describe("Login", () => {
-  it("should log in successfully", () => {
-    cy.visit("https://swift-scribe.vercel.app/signin");
+from locust import HttpUser, task, between
+import time
 
-    cy.get('input[type="email"]').type("ryantzr@gmail.com");
-    cy.get('input[type="password"]').type("testing12345");
+class UploadUser(HttpUser):
+    wait_time = between(2, 5)
 
-    // Submit the login form
-    cy.get('button[type="submit"]').click();
+    def on_start(self):
+        self.login()
 
-    // Check if the user is redirected to the home page
-    cy.url().should("include", "/");
+    def login(self):
+        response = self.client.post("/signin", json={"email": "ryantzr@gmail.com", "password": "testing12345"})
 
-    // Check if the user is logged in by verifying the presence of a logged-in element
-    // cy.get('a[data-testid="logged-in-element"]').should("be.visible");
-    cy.contains("Sign out").should("be.visible");
-  });
+    @task
+    def upload_file(self):
+        file_path = "./cypress/fixtures/5607.mp4"
+        uploaded_file_name = "5607.mp4"
 
-  it("should display an error message for invalid credentials", () => {
-    // Start from the login page
-    cy.visit("https://swift-scribe.vercel.app/signin");
+        self.client.get("/upload")  # Visit the upload page
 
-    // Enter an invalid email and password in the input fields
-    cy.get('input[type="email"]').type("invalid@example.com");
-    cy.get('input[type="password"]').type("incorrectpassword");
+        self.client.click_link("Upload")  # Click the upload button
 
-    // Submit the login form
-    cy.get('button[type="submit"]').click();
+        with open(file_path, "rb") as file:
+            self.client.post("/upload", files={"file": file})
 
-    // Check if an error message is displayed
-    cy.get("p.text-red-500")
-      .should("be.visible")
-      .contains("Invalid Email or Password");
-  });
-});
+        self.client.post("/upload", json={"fileName": uploaded_file_name})  # Set the uploaded file name
+
+        self.client.click_link("Process")  # Click the process button
+        self.client.post("/process", json={"language": "English"})  # Select the language
+
+        time.sleep(300)  # Add a time delay of 5 minutes for processing
+
+        self.client.click_link("Select")  # Click the select button
+
+        self.client.click_link("Close")  # Close the extraction popup
+
+        self.client.click_link("Save")  # Click the save button
