@@ -57,8 +57,8 @@ function Dashboard() {
     <main className="h-screen">
       <h1 className="text-4xl font-bold p-8">My Dashboard</h1>
       <div className="flex justify-between pl-8 pr-12">
-        <StatisticsContainer title="Documents Summarised" value={fileCount.toString()} />
-        <StatisticsContainer title="Total Storage Used (GB)" value="Under Development" />
+        <StatisticsContainer title="Files in Database" value={fileCount.toString()} />
+        <StatisticsContainer title="Total Media Transcribed" value={user.media_transcribed} />
       </div>
       <div className="bg-white p-8">
         <FileContainer logs={logs} onDelete={deleteFile} />

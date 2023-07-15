@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { v4 as uuidv4 } from "uuid";
 
 const UploadPage = () => {
-  const mockTranscribedText = "This is a sample transcribed text.";
+  const mockTranscribedText = "Transcribed text will be generated here.";
   const [transcribedText, setTranscribedText] = useState(mockTranscribedText);
   const [fileName, setFileName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,6 +41,8 @@ const UploadPage = () => {
 
   const handleLanguageSelection = async () => {
     setShowLanguageSelection(false);
+
+    user.media_transcribed = user.media_transcribed + 1;
 
     if (selectedLanguage === "") {
       setNotificationMessage("Please select a language.");
@@ -107,7 +109,7 @@ const UploadPage = () => {
 
         // Wait for 3 times the duration of the video
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 1 * 1000; // Convert to milliseconds
 
         await new Promise((resolve) => setTimeout(resolve, waitDuration));
 
@@ -118,7 +120,8 @@ const UploadPage = () => {
           },
           body: JSON.stringify({
             purpose: "Summarization",
-            text_id: text_id
+            text_id: text_id,
+            duration: videoDuration
           }),
         });
   
@@ -167,9 +170,9 @@ const UploadPage = () => {
       try {
         console.log("IN FIRST BLOCK");
 
-        // Wait for 3 times the duration of the video
+        // Wait for  the duration of the video
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 1 * 1000; // Convert to milliseconds
 
         await new Promise((resolve) => setTimeout(resolve, waitDuration));
 
@@ -180,7 +183,8 @@ const UploadPage = () => {
           },
           body: JSON.stringify({
             purpose: "Transcription",
-            text_id: text_id
+            text_id: text_id,
+            duration: videoDuration
           }),
         });
   
@@ -378,7 +382,7 @@ const UploadPage = () => {
       {isNotificationOpen && (
         <div className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 ${isNotificationOpen ? 'overflow-hidden' : ''}`}>
           <div className="bg-gray-700 rounded-lg p-8 flex flex-col items-center max-w-2xl mx-auto shadow-lg border border-gray-500">
-            <p className="text-sm text-gray-400 mb-2 text-center">SwiftScribe is still currently in its beta testing stage, utilizing a localized server for cost constraints. We recommend using shorter videos within 1 minute for optimal performance due to speed constraints.</p>
+            <p className="text-sm text-gray-400 mb-2 text-center">SwiftScribe is still currently in its beta testing stage, utilizing a localized server for cost constraints. We have carried out backend optimization to enable processing of longer videos and the expected processing time is 2x the duration of the video. However, due to API timeout constraints of a localised server, longer videos might fail to process. The use of a paid cloud server subscription will overcome this issue once SwiftScribe is pushed for production.</p>
             <h3 className={`text-lg ${notificationType === "error" ? "text-red-500" : "text-green-500"} mb-4 text-center`}>{notificationMessage}</h3>
             {isLoading ? (
               <div className="flex items-center justify-center my-4">
