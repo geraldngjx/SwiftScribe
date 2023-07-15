@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { v4 as uuidv4 } from "uuid";
 
 const UploadPage = () => {
   const mockTranscribedText = "This is a sample transcribed text.";
@@ -66,13 +67,15 @@ const UploadPage = () => {
   };
 
   const handleSummarization = async () => {
+    const text_id = uuidv4();
     try {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
       formData.append("language", selectedLanguage); // Add language field
+      formData.append("text_id", text_id);
 
       const response = await fetch(
-        "https://c83a-101-78-125-97.ngrok-free.app/media/extract",
+        "https://9068-101-78-125-97.ngrok-free.app/media/extract",
         {
           method: "POST",
           body: formData,
@@ -80,8 +83,12 @@ const UploadPage = () => {
       );
 
       if (!response.ok) {
+        console.log("IN FIRST BLOCK");
+
         console.log("RESPONSE STATUS: " + response.status);
+
         throw new Error(`HTTP error! status: ${response.status}`);
+
       } else {
         const data = await response.json();
         console.log(data);
@@ -95,20 +102,53 @@ const UploadPage = () => {
         }
       }
     } catch (error) {
-      console.error("Error while uploading and extracting audio:", error);
-      setNotificationMessage("Failed to extract audio.");
-      setNotificationType("error");
+      try {
+        console.log("IN FIRST BLOCK");
+
+        // Wait for 3 times the duration of the video
+        const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
+        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+
+        await new Promise((resolve) => setTimeout(resolve, waitDuration));
+
+        const response = await fetch("/api/temp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            purpose: "Summarization",
+            text_id: text_id
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Extract text data from Temp object
+        const data = await response.json();
+        console.log(data);
+        setNotificationMessage("Transcription and Summarization Completed Successfully.");
+        setTranscribedText(data.text);
+      } catch (error) {
+        console.error("Error while uploading and extracting audio:", error);
+        setNotificationMessage("Failed to extract audio.");
+        setNotificationType("error");
+      }     
     }
   };
 
   const handleTranscriptionOnly = async () => {
+    const text_id = uuidv4();
     try {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
       formData.append("language", selectedLanguage);
+      formData.append("text_id", text_id);
   
       const response = await fetch(
-        "https://c83a-101-78-125-97.ngrok-free.app/media/transcription",
+        "https://9068-101-78-125-97.ngrok-free.app/media/transcription",
         {
           method: "POST",
           body: formData,
@@ -116,8 +156,7 @@ const UploadPage = () => {
       );
   
       if (!response.ok) {
-        console.log("RESPONSE STATUS: " + response.status);
-        throw new Error(`HTTP error! status: ${response.status}`);
+
       } else {
         const data = await response.json();
         console.log(data);
@@ -125,11 +164,62 @@ const UploadPage = () => {
         setTranscribedText(data.transcript);
       }
     } catch (error) {
-      console.error("Error while uploading and extracting audio:", error);
-      setNotificationMessage("Failed to extract audio.");
-      setNotificationType("error");
+      try {
+        console.log("IN FIRST BLOCK");
+
+        // Wait for 3 times the duration of the video
+        const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
+        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+
+        await new Promise((resolve) => setTimeout(resolve, waitDuration));
+
+        const response = await fetch("/api/temp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            purpose: "Transcription",
+            text_id: text_id
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Extract text data from Temp object
+        const data = await response.json();
+        console.log(data);
+        setNotificationMessage("Transcription Completed Successfully.");
+        setTranscribedText(data.text);
+      } catch (error) {
+        console.error("Error while uploading and extracting audio:", error);
+        setNotificationMessage("Failed to extract audio.");
+        setNotificationType("error");
+      }
     }
   };
+
+  function getVideoDuration(videoFile) {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.src = URL.createObjectURL(videoFile);
+      
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(video.src);
+        const duration = video.duration;
+        console.log("DURATION: " + duration);
+        resolve(duration);
+      };
+  
+      video.onerror = (error) => {
+        URL.revokeObjectURL(video.src);
+        reject(error);
+      };
+    });
+  }
 
   const handleSave = async () => {
     if (fileName === "") {

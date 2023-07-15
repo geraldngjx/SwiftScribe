@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "../../context/AuthContext";
+import { jsPDF } from "jspdf";
 
 const EditPage = () => {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const [transcribedText, setTranscribedText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [selectedFormat, setSelectedFormat] = useState("");
   const [modalMessage, setModalMessage] = useState("");
-  const [modalType, setModalType] = useState("success"); // Added modalType state
+  const [modalType, setModalType] = useState("success");
   const { user } = useAuth();
   const router = useRouter();
   const { fileId } = router.query;
@@ -59,13 +62,38 @@ const EditPage = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    // Route user back to '/manage' page after closing the modal
-    router.push("/manage");
+    // Route user back to 'View Document' page of the specific file
+    router.push(`/manage`);
   };
 
   const handleBack = () => {
-    // Route user back to '/manage' page
-    router.push("/manage");
+    // Route user back to 'View Document' page of the specific file
+    router.push(`/manage`);
+  };
+
+  const closeOptions = () => {
+    setIsOptionsOpen(false);
+  };
+
+  const handleExport = () => {
+    if (selectedFormat === "pdf") {
+      const pdf = new jsPDF();
+
+      pdf.setFontSize(20);
+      pdf.text(fileName, 10, 20);
+
+      pdf.setFontSize(12);
+      pdf.text(transcribedText, 10, 40);
+
+      pdf.save(`${fileName}.pdf`);
+    } else if (selectedFormat === "text") {
+      const element = document.createElement("a");
+      const file = new Blob([transcribedText], { type: "text/plain" });
+      element.href = URL.createObjectURL(file);
+      element.download = `${fileName}.txt`;
+      document.body.appendChild(element); // Required for Firefox
+      element.click();
+    }
   };
 
   return (
@@ -94,6 +122,12 @@ const EditPage = () => {
             Back
           </button>
           <button
+            className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg mr-4"
+            onClick={() => setIsOptionsOpen(true)}
+          >
+            Export
+          </button>
+          <button
             className="px-8 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
             onClick={handleSave}
           >
@@ -102,7 +136,41 @@ const EditPage = () => {
         </div>
       </div>
 
-      {isModalOpen && (
+      {isOptionsOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-gray-700 rounded-lg p-8">
+            <h3 className="text-lg text-white text-center mb-4">Export As</h3>
+            <select
+              className="w-full p-2 mb-4 bg-gray-500 text-white rounded-lg"
+              value={selectedFormat}
+              onChange={(e) => setSelectedFormat(e.target.value)}
+            >
+              <option value="">Select Format</option>
+              <option value="pdf">PDF</option>
+              <option value="text">Text File</option>
+            </select>
+            <div className="flex justify-between">
+              <button
+                className="px-8 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg mr-4"
+                onClick={closeOptions}
+              >
+                Close
+              </button>
+              <button
+                className={`px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg ${
+                  selectedFormat ? "" : "bg-gray-600 hover:bg-gray-600 text-gray-500 curser-not-allowed"
+                }`}
+                onClick={handleExport}
+                disabled={!selectedFormat}
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalMessage && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-gray-700 rounded-lg p-8">
             <h3
