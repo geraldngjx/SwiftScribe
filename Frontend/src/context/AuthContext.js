@@ -25,6 +25,7 @@ export const AuthContextProvider = ({
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
+          media_transcribed: user.media_transcribed
         })
       } else {
         setUser(null)
@@ -37,6 +38,16 @@ export const AuthContextProvider = ({
 
   const signup = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      setUser({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        media_transcribed: 0 // Initialize media_transcribed to 0
+      });
+      return userCredential;
+    });
   }
 
   const login = (email, password) => {

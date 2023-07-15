@@ -5,9 +5,38 @@ const fs = require('fs');
 const { v4: uuidv4 } = require("uuid");
 const axios = require('axios');
 const path = require('path');
-const cors = require('cors'); // Import the cors middleware
+const cors = require('cors');
+const mongoose = require('mongoose');
+
+// Connect to MongoDB
+mongoose.connect("mongodb+srv://admin:VrJdvxKgCbB7x6tK@cluster0.5mhgl.mongodb.net/SwiftScribe?retryWrites=true&w=majority", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
+
+// Define the schema for the Temp collection
+const tempSchema = new mongoose.Schema({
+  text_id: { type: String },
+  transcript: { type: String, default: '__EMPTY__' },
+  summary: { type: String, default: '__EMPTY__' },
+});
+
+// Create the Temp model
+const Temp = mongoose.models.Temp || mongoose.model('Temp', tempSchema);
 
 const VIDEO_BASE_PATH = "./uploads";
+
+router.use(cors());
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 const storage = multer.diskStorage({
   destination: VIDEO_BASE_PATH,
@@ -19,12 +48,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Enable CORS
-router.use(cors());
-
 router.post("/extract", upload.single("video"), async (req, res) => {
   try {
     const language = req.body.language;
+    const text_id = req.body.text_id;
 
     console.log("API REQUEST RECEIVED");
     console.log("UPLOADING FILE NOW");
@@ -40,6 +67,14 @@ router.post("/extract", upload.single("video"), async (req, res) => {
     console.log("FILE UPLOADED SUCCESSFULLY");
     console.log("TRANSCRIBING FILE NOW");
 
+    // Create a new Temp document with "__EMPTY__" values and set the text_id
+    const temp = new Temp({ text_id, transcript: '__EMPTY__', summary: '__EMPTY__' });
+
+    // Save the Temp document to MongoDB
+    await temp.save();
+
+    console.log("TEMP OBJECT CREATED IN MONGODB");
+
     const transcribeStartTime = new Date();
     const transcribeResponse = await axios.post(
       "http://127.0.0.1:8000/transcribe/local",
@@ -48,7 +83,8 @@ router.post("/extract", upload.single("video"), async (req, res) => {
         language: language,
       },
       {
-        timeout: 30 * 60 * 1000, // 30 minutes timeout
+        // timeout: 120 * 60 * 1000, // 120 minutes timeout
+        timeout: 0 // Remove Timeout Limit
       }
     );
     const transcribeEndTime = new Date();
@@ -57,7 +93,11 @@ router.post("/extract", upload.single("video"), async (req, res) => {
     console.log("TRANSCRIPTION COMPLETED SUCCESSFULLY");
     console.log("Transcription Time:", transcribeEndTime - transcribeStartTime, "ms");
 
-    const transcript = transcribeResponse.data;
+    // Update the Temp document with the transcription
+    temp.transcript = transcribeResponse.data;
+    await temp.save();
+
+    console.log("TEMP OBJECT UPDATED IN MONGODB");
 
     let summary = "";
 
@@ -65,7 +105,7 @@ router.post("/extract", upload.single("video"), async (req, res) => {
 
     const summarizeStartTime = new Date();
     const summaryResponse = await axios.post("http://127.0.0.1:8000/summarize", {
-      text: transcript,
+      text: transcribeResponse.data,
     });
     const summarizeEndTime = new Date();
 
@@ -73,9 +113,15 @@ router.post("/extract", upload.single("video"), async (req, res) => {
     console.log("SUMMARY: " + summary);
     console.log("SUMMARIZATION COMPLETED SUCCESSFULLY");
     console.log("Summarization Time:", summarizeEndTime - summarizeStartTime, "ms");
+
+    // Update the Temp document with the summary
+    temp.summary = summary;
+    await temp.save();
+
+    console.log("TEMP OBJECT UPDATED IN MONGODB");
     console.log("SENDING TEXT DATA BACK TO FRONTEND WEBSITE");
 
-    res.json({ transcript, summary });
+    res.json({ text_id: temp.text_id, transcript: temp.transcript, summary: temp.summary });
   } catch (error) {
     console.error("An error occurred while processing the file:", error);
     res.status(500).json({ message: "An error occurred while processing the file" });
@@ -95,6 +141,7 @@ router.post("/extract", upload.single("video"), async (req, res) => {
 router.post("/transcription", upload.single("video"), async (req, res) => {
   try {
     const language = req.body.language;
+    const text_id = req.body.text_id;
 
     console.log("API REQUEST RECEIVED");
     console.log("UPLOADING FILE NOW");
@@ -110,6 +157,14 @@ router.post("/transcription", upload.single("video"), async (req, res) => {
     console.log("FILE UPLOADED SUCCESSFULLY");
     console.log("TRANSCRIBING FILE NOW");
 
+    // Create a new Temp document with "__EMPTY__" values and set the text_id
+    const temp = new Temp({ text_id, transcript: '__EMPTY__', summary: '__EMPTY__' });
+
+    // Save the Temp document to MongoDB
+    await temp.save();
+
+    console.log("TEMP OBJECT CREATED IN MONGODB");
+
     const transcribeStartTime = new Date();
     const transcribeResponse = await axios.post(
       "http://127.0.0.1:8000/transcribe/local",
@@ -118,7 +173,8 @@ router.post("/transcription", upload.single("video"), async (req, res) => {
         language: language,
       },
       {
-        timeout: 30 * 60 * 1000, // 30 minutes timeout
+        // timeout: 120 * 60 * 1000, // 120 minutes timeout
+        timeout: 0 // Remove Timeout Limit
       }
     );
     const transcribeEndTime = new Date();
@@ -129,9 +185,15 @@ router.post("/transcription", upload.single("video"), async (req, res) => {
 
     const transcript = transcribeResponse.data;
 
+    // Update the Temp document with the transcription
+    temp.transcript = transcribeResponse.data;
+    await temp.save();
+
+    console.log("TEMP OBJECT UPDATED IN MONGODB");
+
     console.log("SENDING TEXT DATA BACK TO FRONTEND WEBSITE");
 
-    res.json({ transcript });
+    res.json({ text_id: temp.text_id, transcript });
   } catch (error) {
     console.error("An error occurred while processing the file:", error);
     res.status(500).json({ message: "An error occurred while processing the file" });
@@ -158,7 +220,8 @@ router.get('/test', (req, res) => {
 
 // Increase the server timeout to 10 minutes (adjust as needed)
 const server = express();
-server.timeout = 30 * 60 * 1000; // 30 minutes timeout
+// server.timeout = 120 * 60 * 1000; // 120 minutes timeout
+server.timeout = 0; // Remove Timeout Limit
 
 server.use('/', router);
 

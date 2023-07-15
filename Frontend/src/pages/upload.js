@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { v4 as uuidv4 } from "uuid";
 
 const UploadPage = () => {
-  const mockTranscribedText = "This is a sample transcribed text.";
+  const mockTranscribedText = "Transcribed text will be generated here.";
   const [transcribedText, setTranscribedText] = useState(mockTranscribedText);
   const [fileName, setFileName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,6 +42,8 @@ const UploadPage = () => {
   const handleLanguageSelection = async () => {
     setShowLanguageSelection(false);
 
+    user.media_transcribed = user.media_transcribed + 1;
+
     if (selectedLanguage === "") {
       setNotificationMessage("Please select a language.");
       setNotificationType("error");
@@ -66,13 +69,15 @@ const UploadPage = () => {
   };
 
   const handleSummarization = async () => {
+    const text_id = uuidv4();
     try {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
       formData.append("language", selectedLanguage); // Add language field
+      formData.append("text_id", text_id);
 
       const response = await fetch(
-        "https://c83a-101-78-125-97.ngrok-free.app/media/extract",
+        "https://9068-101-78-125-97.ngrok-free.app/media/extract",
         {
           method: "POST",
           body: formData,
@@ -80,8 +85,12 @@ const UploadPage = () => {
       );
 
       if (!response.ok) {
+        console.log("IN FIRST BLOCK");
+
         console.log("RESPONSE STATUS: " + response.status);
+
         throw new Error(`HTTP error! status: ${response.status}`);
+
       } else {
         const data = await response.json();
         console.log(data);
@@ -95,20 +104,54 @@ const UploadPage = () => {
         }
       }
     } catch (error) {
-      console.error("Error while uploading and extracting audio:", error);
-      setNotificationMessage("Failed to extract audio.");
-      setNotificationType("error");
+      try {
+        console.log("IN FIRST BLOCK");
+
+        // Wait for 3 times the duration of the video
+        const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
+        const waitDuration = videoDuration * 1 * 1000; // Convert to milliseconds
+
+        await new Promise((resolve) => setTimeout(resolve, waitDuration));
+
+        const response = await fetch("/api/temp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            purpose: "Summarization",
+            text_id: text_id,
+            duration: videoDuration
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Extract text data from Temp object
+        const data = await response.json();
+        console.log(data);
+        setNotificationMessage("Transcription and Summarization Completed Successfully.");
+        setTranscribedText(data.text);
+      } catch (error) {
+        console.error("Error while uploading and extracting audio:", error);
+        setNotificationMessage("Failed to extract audio.");
+        setNotificationType("error");
+      }     
     }
   };
 
   const handleTranscriptionOnly = async () => {
+    const text_id = uuidv4();
     try {
       const formData = new FormData();
       formData.append("video", fileInputRef.current.files[0]);
       formData.append("language", selectedLanguage);
+      formData.append("text_id", text_id);
   
       const response = await fetch(
-        "https://c83a-101-78-125-97.ngrok-free.app/media/transcription",
+        "https://9068-101-78-125-97.ngrok-free.app/media/transcription",
         {
           method: "POST",
           body: formData,
@@ -116,8 +159,7 @@ const UploadPage = () => {
       );
   
       if (!response.ok) {
-        console.log("RESPONSE STATUS: " + response.status);
-        throw new Error(`HTTP error! status: ${response.status}`);
+
       } else {
         const data = await response.json();
         console.log(data);
@@ -125,11 +167,63 @@ const UploadPage = () => {
         setTranscribedText(data.transcript);
       }
     } catch (error) {
-      console.error("Error while uploading and extracting audio:", error);
-      setNotificationMessage("Failed to extract audio.");
-      setNotificationType("error");
+      try {
+        console.log("IN FIRST BLOCK");
+
+        // Wait for  the duration of the video
+        const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
+        const waitDuration = videoDuration * 1 * 1000; // Convert to milliseconds
+
+        await new Promise((resolve) => setTimeout(resolve, waitDuration));
+
+        const response = await fetch("/api/temp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            purpose: "Transcription",
+            text_id: text_id,
+            duration: videoDuration
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Extract text data from Temp object
+        const data = await response.json();
+        console.log(data);
+        setNotificationMessage("Transcription Completed Successfully.");
+        setTranscribedText(data.text);
+      } catch (error) {
+        console.error("Error while uploading and extracting audio:", error);
+        setNotificationMessage("Failed to extract audio.");
+        setNotificationType("error");
+      }
     }
   };
+
+  function getVideoDuration(videoFile) {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.src = URL.createObjectURL(videoFile);
+      
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(video.src);
+        const duration = video.duration;
+        console.log("DURATION: " + duration);
+        resolve(duration);
+      };
+  
+      video.onerror = (error) => {
+        URL.revokeObjectURL(video.src);
+        reject(error);
+      };
+    });
+  }
 
   const handleSave = async () => {
     if (fileName === "") {
@@ -288,7 +382,7 @@ const UploadPage = () => {
       {isNotificationOpen && (
         <div className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 ${isNotificationOpen ? 'overflow-hidden' : ''}`}>
           <div className="bg-gray-700 rounded-lg p-8 flex flex-col items-center max-w-2xl mx-auto shadow-lg border border-gray-500">
-            <p className="text-sm text-gray-400 mb-2 text-center">SwiftScribe is still currently in its beta testing stage, utilizing a localized server for cost constraints. We recommend using shorter videos within 1 minute for optimal performance due to speed constraints.</p>
+            <p className="text-sm text-gray-400 mb-2 text-center">SwiftScribe is still currently in its beta testing stage, utilizing a localized server for cost constraints. We have carried out backend optimization to enable processing of longer videos and the expected processing time is 2x the duration of the video. However, due to API timeout constraints of a localised server, longer videos might fail to process. The use of a paid cloud server subscription will overcome this issue once SwiftScribe is pushed for production.</p>
             <h3 className={`text-lg ${notificationType === "error" ? "text-red-500" : "text-green-500"} mb-4 text-center`}>{notificationMessage}</h3>
             {isLoading ? (
               <div className="flex items-center justify-center my-4">

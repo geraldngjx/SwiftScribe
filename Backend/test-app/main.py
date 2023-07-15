@@ -61,13 +61,13 @@ def summarize_text(data: TextData):
     logger.info("Summarizing text")
 
     # Determine the length of the input text
-    text_length = len(data.text)
+    # text_length = len(data.text)
 
     # Adjust the max_length parameter based on the text length
-    max_length = min(text_length * 2, 1024)  # Set a maximum of 1024 or double the text length, whichever is smaller
+    # max_length = min(text_length * 2, 1024)  # Set a maximum of 1024 or double the text length, whichever is smaller
 
     # Summarize the text with the adjusted max_length
-    summary = summarizer(data.text, max_length=max_length, min_length=30, do_sample=False)
+    summary = summarizer(data.text, do_sample=False)
 
     logger.info("Text summarization completed")
 
