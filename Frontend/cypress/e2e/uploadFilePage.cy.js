@@ -40,15 +40,19 @@ describe("Upload Page", () => {
       "have.value",
       uploadedFileName
     );
-    // click extract button
-    cy.get(".text-transcription-container button").contains("Extract").click();
+    // click process button
+    cy.contains("Process").click();
+    cy.get("select").select("English");
+    cy.wait(2000);
+
+    cy.get(".bg-gray-700 button").contains("Select").click();
 
     // validate that the "In Progress" button appears, indicating that extraction is ongoing
-    cy.get(".video-upload-container .panel button")
-      .contains("In Progress")
+    cy.get(".fixed.inset-0.flex.items-center.justify-center.z-50")
+      .contains("in progress")
       .should("be.visible");
 
-    cy.get(".video-upload-container .panel button")
+    cy.get(".fixed.inset-0.flex.items-center.justify-center.z-50")
       .contains("Completed")
       .should("be.visible");
 
