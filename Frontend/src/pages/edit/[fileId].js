@@ -12,6 +12,7 @@ const EditPage = () => {
   const [selectedFormat, setSelectedFormat] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("success");
+  const [isHighContrast, setIsHighContrast] = useState(false); // New state for High Contrast mode
   const { user } = useAuth();
   const router = useRouter();
   const { fileId } = router.query;
@@ -77,15 +78,39 @@ const EditPage = () => {
 
   const handleExport = () => {
     if (selectedFormat === "pdf") {
-      const pdf = new jsPDF();
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+        lineHeight: 1,
+        compress: true,
+      });
 
-      pdf.setFontSize(20);
-      pdf.text(fileName, 10, 20);
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 20;
+      let cursorY = margin;
 
-      pdf.setFontSize(12);
-      pdf.text(transcribedText, 10, 40);
+      doc.setFontSize(20);
+      doc.text(fileName, margin, cursorY);
 
-      pdf.save(`${fileName}.pdf`);
+      cursorY += 20;
+
+      doc.setFontSize(12);
+
+      const lines = doc.splitTextToSize(transcribedText, pageWidth - margin * 2);
+
+      lines.forEach((line) => {
+        if (cursorY + 12 > pageHeight - margin) {
+          doc.addPage();
+          cursorY = margin;
+        }
+
+        doc.text(line, margin, cursorY);
+        cursorY += 12;
+      });
+
+      doc.save(`${fileName}.pdf`);
     } else if (selectedFormat === "text") {
       const element = document.createElement("a");
       const file = new Blob([transcribedText], { type: "text/plain" });
@@ -96,52 +121,75 @@ const EditPage = () => {
     }
   };
 
+  const toggleHighContrast = () => {
+    setIsHighContrast((prevState) => !prevState);
+  };
+
   return (
-    <div className="edit-page h-screen px-8">
+    <div className={`edit-page h-screen px-8 ${isHighContrast ? "high-contrast" : ""}`}>
       <h1 className="text-4xl font-bold py-8">Edit Document</h1>
 
-      <div className="text-transcription-container bg-gray-700 mb-8 p-4 rounded-lg">
+      <div className={`text-transcription-container bg-gray-700 mb-8 p-4 rounded-lg ${isHighContrast ? "text-white" : ""}`}>
         <input
           type="text"
-          className="w-full p-2 border border-black rounded-md mb-4"
+          className={`w-full p-2 border border-black rounded-md mb-4 ${isHighContrast ? "bg-black text-white" : ""}`}
           placeholder="File Name"
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
         />
         <textarea
-          className="w-full h-72 p-2 border border-black rounded-md mb-4"
+          className={`w-full h-72 p-2 border border-black rounded-md mb-4 ${isHighContrast ? "bg-black text-white" : ""}`}
           placeholder="Transcribed Text"
           value={transcribedText}
           onChange={(e) => setTranscribedText(e.target.value)}
         ></textarea>
-        <div className="flex justify-center">
-          <button
-            className="px-8 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg mr-4"
-            onClick={handleBack}
-          >
-            Back
-          </button>
-          <button
-            className="px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg mr-4"
-            onClick={() => setIsOptionsOpen(true)}
-          >
-            Export
-          </button>
-          <button
-            className="px-8 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
-            onClick={handleSave}
-          >
-            Save
-          </button>
+        <div className="flex justify-between items-center"> {/* Updated container for buttons */}
+          <div className="flex ml-80">
+            <button
+              className={`px-8 py-2 ${isHighContrast ? "bg-white text-black" : "bg-red-500 hover:bg-red-600 text-white"} rounded-lg mr-4`}
+              onClick={handleBack}
+            >
+              Back
+            </button>
+            <button
+              className={`px-8 py-2 ${isHighContrast ? "bg-white text-black" : "bg-blue-500 hover:bg-blue-600 text-white"} rounded-lg mr-4`}
+              onClick={() => setIsOptionsOpen(true)}
+            >
+              Export
+            </button>
+            <button
+              className={`px-8 py-2 ${isHighContrast ? "bg-white text-black" : "bg-green-500 hover:bg-green-600 text-white"} rounded-lg`}
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer"> {/* High Contrast Mode Toggle Button */}
+            <input
+              type="checkbox"
+              value=""
+              className="sr-only peer"
+              checked={isHighContrast}
+              onChange={() => setIsHighContrast(!isHighContrast)}
+            />
+            <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span className="ml-3 text-sm font-medium text-white dark:text-gray-300">
+              {isHighContrast ? "Normal View" : "High Contrast"}
+            </span>
+          </label>
         </div>
       </div>
 
       {isOptionsOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-gray-700 rounded-lg p-8">
-            <h3 className="text-lg text-white text-center mb-4">Export As</h3>
+            <h3 className={`text-lg text-white text-center mb-4 ${isHighContrast ? "high-contrast-text" : ""}`}>
+              Export As
+            </h3>
             <select
-              className="w-full p-2 mb-4 bg-gray-500 text-white rounded-lg"
+              className={`w-full p-2 mb-4 bg-gray-500 text-white rounded-lg ${
+                isHighContrast ? "high-contrast-select" : ""
+              }`}
               value={selectedFormat}
               onChange={(e) => setSelectedFormat(e.target.value)}
             >
@@ -151,13 +199,17 @@ const EditPage = () => {
             </select>
             <div className="flex justify-between">
               <button
-                className="px-8 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg mr-4"
+                className={`px-8 py-2 ${
+                  isHighContrast ? "bg-white text-black" : "bg-gray-500 hover:bg-gray-600 text-white"
+                } rounded-lg mr-4`}
                 onClick={closeOptions}
               >
                 Close
               </button>
               <button
-                className={`px-8 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg ${
+                className={`px-8 py-2 ${
+                  isHighContrast ? "bg-white text-black" : "bg-blue-500 hover:bg-blue-600 text-white"
+                } rounded-lg ${
                   selectedFormat ? "" : "bg-gray-600 hover:bg-gray-600 text-gray-500 curser-not-allowed"
                 }`}
                 onClick={handleExport}

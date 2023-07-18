@@ -85,11 +85,8 @@ const UploadPage = () => {
       );
 
       if (!response.ok) {
-        console.log("IN FIRST BLOCK");
 
-        console.log("RESPONSE STATUS: " + response.status);
-
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error!`);
 
       } else {
         const data = await response.json();
@@ -106,39 +103,76 @@ const UploadPage = () => {
     } catch (error) {
       try {
         console.log("IN FIRST BLOCK");
-
-        // Wait for 3 times the duration of the video
+      
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 1 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+      
+        // Wait for 3 times the duration of the video
+        await new Promise((resolve) => setTimeout(resolve, videoDuration));
+      
+        let summarizedText = "";
+        let isSummarizationCompleted = false;
+        let counter = 0;
+        const startTime = Date.now(); // Record the start time
+      
+        // Start a loop with an interval of 1 minute
+        const interval = setInterval(async () => {
+          try {
+            counter++;
+            console.log("Number of Iterations: " + counter);
+            const response = await fetch("/api/temp", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                purpose: "Summarization",
+                text_id: text_id,
+              }),
+            });
 
-        await new Promise((resolve) => setTimeout(resolve, waitDuration));
-
-        const response = await fetch("/api/temp", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            purpose: "Summarization",
-            text_id: text_id,
-            duration: videoDuration
-          }),
+            const elapsedTime = Date.now() - startTime; // Calculate elapsed time
+            console.log("Time Elapsed: " + elapsedTime / 1000 / 60 + "min");
+      
+            if (response.ok) {
+              const data = await response.json();
+      
+              if (data.text) {
+                // Transcription completed, break the loop
+                summarizedText = data.text;
+                isSummarizationCompleted = true;
+                clearInterval(interval);
+              }
+            }
+          } catch (error) {
+            console.error("Error while fetching summary:", error);
+          }
+        }, 60000); // 1 minute interval
+      
+        // Wait until the transcription is completed or the video duration has passed
+        await new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            clearTimeout(timeout);
+            if (!isSummarizationCompleted) {
+              clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
+              throw new Error("Transcription and Summarization not completed within the specified duration.");
+            }
+            resolve();
+          }, waitDuration);
         });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+      
+        if (summarizedText) {
+          setNotificationMessage("Transcription and Summarization Completed Successfully.");
+          setTranscribedText(summarizedText);
+        } else {
+          setNotificationMessage("Failed to extract audio.");
+          setNotificationType("error");
         }
-
-        // Extract text data from Temp object
-        const data = await response.json();
-        console.log(data);
-        setNotificationMessage("Transcription and Summarization Completed Successfully.");
-        setTranscribedText(data.text);
       } catch (error) {
         console.error("Error while uploading and extracting audio:", error);
         setNotificationMessage("Failed to extract audio.");
         setNotificationType("error");
-      }     
+      }
     }
   };
 
@@ -160,6 +194,8 @@ const UploadPage = () => {
   
       if (!response.ok) {
 
+        throw new Error(`HTTP error!`);
+
       } else {
         const data = await response.json();
         console.log(data);
@@ -169,34 +205,71 @@ const UploadPage = () => {
     } catch (error) {
       try {
         console.log("IN FIRST BLOCK");
-
-        // Wait for  the duration of the video
+      
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 1 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+      
+        // Wait for 3 times the duration of the video
+        await new Promise((resolve) => setTimeout(resolve, videoDuration));
+      
+        let transcribedText = "";
+        let isTranscriptionCompleted = false;
+        let counter = 0;
+        const startTime = Date.now()
+      
+        // Start a loop with an interval of 1 minute
+        const interval = setInterval(async () => {
+          try {
+            counter++;
+            console.log("Number of Iterations: " + counter);
+            const response = await fetch("/api/temp", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                purpose: "Transcription",
+                text_id: text_id,
+              }),
+            });
 
-        await new Promise((resolve) => setTimeout(resolve, waitDuration));
-
-        const response = await fetch("/api/temp", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            purpose: "Transcription",
-            text_id: text_id,
-            duration: videoDuration
-          }),
+            const elapsedTime = Date.now() - startTime; // Calculate elapsed time
+            console.log("Time Elapsed: " + elapsedTime / 1000 / 60 + "min");
+      
+            if (response.ok) {
+              const data = await response.json();
+      
+              if (data.text) {
+                // Transcription completed, break the loop
+                transcribedText = data.text;
+                isTranscriptionCompleted = true;
+                clearInterval(interval);
+              }
+            }
+          } catch (error) {
+            console.error("Error while fetching transcription:", error);
+          }
+        }, 60000); // 1 minute interval
+      
+        // Wait until the transcription is completed or the video duration has passed
+        await new Promise((resolve) => {
+          const timeout = setTimeout(() => {
+            clearTimeout(timeout);
+            if (!isTranscriptionCompleted) {
+              clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
+              throw new Error("Transcription not completed within the specified duration.");
+            }
+            resolve();
+          }, waitDuration);
         });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+      
+        if (transcribedText) {
+          setNotificationMessage("Transcription Completed Successfully.");
+          setTranscribedText(transcribedText);
+        } else {
+          setNotificationMessage("Failed to extract audio.");
+          setNotificationType("error");
         }
-
-        // Extract text data from Temp object
-        const data = await response.json();
-        console.log(data);
-        setNotificationMessage("Transcription Completed Successfully.");
-        setTranscribedText(data.text);
       } catch (error) {
         console.error("Error while uploading and extracting audio:", error);
         setNotificationMessage("Failed to extract audio.");
@@ -382,7 +455,7 @@ const UploadPage = () => {
       {isNotificationOpen && (
         <div className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 ${isNotificationOpen ? 'overflow-hidden' : ''}`}>
           <div className="bg-gray-700 rounded-lg p-8 flex flex-col items-center max-w-2xl mx-auto shadow-lg border border-gray-500">
-            <p className="text-sm text-gray-400 mb-2 text-center">SwiftScribe is still currently in its beta testing stage, utilizing a localized server for cost constraints. We have carried out backend optimization to enable processing of longer videos and the expected processing time is 2x the duration of the video. However, due to API timeout constraints of a localised server, longer videos might fail to process. The use of a paid cloud server subscription will overcome this issue once SwiftScribe is pushed for production.</p>
+            <p className="text-sm text-gray-400 mb-2 text-center">SwiftScribe is still currently in its beta testing stage, utilizing a localized server for cost constraints. We have carried out backend optimization to enable processing of longer videos and the expected processing time is 2x - 3x the duration of the video. However, due to API timeout constraints of a localised server, longer videos might fail to process. The use of a paid cloud server subscription will overcome this issue once SwiftScribe is pushed for production.</p>
             <h3 className={`text-lg ${notificationType === "error" ? "text-red-500" : "text-green-500"} mb-4 text-center`}>{notificationMessage}</h3>
             {isLoading ? (
               <div className="flex items-center justify-center my-4">
