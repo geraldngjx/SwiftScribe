@@ -85,31 +85,42 @@ const EditPage = () => {
         lineHeight: 1,
         compress: true,
       });
-
+  
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 20;
       let cursorY = margin;
-
+  
+      // Set background and foreground colors for high contrast mode
+      const backgroundColor = isHighContrast ? "#000000" : "#ffffff";
+      const foregroundColor = isHighContrast ? "#ffffff" : "#000000";
+  
+      doc.setFillColor(backgroundColor);
+      doc.rect(0, 0, pageWidth, pageHeight, "F");
+  
       doc.setFontSize(20);
+      doc.setTextColor(foregroundColor);
       doc.text(fileName, margin, cursorY);
-
+  
       cursorY += 20;
-
+  
       doc.setFontSize(12);
-
+      doc.setTextColor(foregroundColor);
+  
       const lines = doc.splitTextToSize(transcribedText, pageWidth - margin * 2);
-
+  
       lines.forEach((line) => {
         if (cursorY + 12 > pageHeight - margin) {
           doc.addPage();
+          doc.setFillColor(backgroundColor);
+          doc.rect(0, 0, pageWidth, pageHeight, "F");
           cursorY = margin;
         }
-
+  
         doc.text(line, margin, cursorY);
         cursorY += 12;
       });
-
+  
       doc.save(`${fileName}.pdf`);
     } else if (selectedFormat === "text") {
       const element = document.createElement("a");
@@ -143,8 +154,8 @@ const EditPage = () => {
           value={transcribedText}
           onChange={(e) => setTranscribedText(e.target.value)}
         ></textarea>
-        <div className="flex justify-between items-center"> {/* Updated container for buttons */}
-          <div className="flex ml-80">
+        <div className="w-full flex justify-end items-center"> {/* Updated container for buttons */}
+          <div className="w-1/2 flex items-end">
             <button
               className={`px-8 py-2 ${isHighContrast ? "bg-white text-black" : "bg-red-500 hover:bg-red-600 text-white"} rounded-lg mr-4`}
               onClick={handleBack}
