@@ -7,24 +7,23 @@ ngrok
     addr: "3000",
   })
   .then((url) => {
-    console.log(`ngrok tunnel opened at: ${url}`);
-    console.log("Open the ngrok dashboard at: https://localhost:4040\n");
+    console.log(`Ngrok tunnel is now active at: ${url}`);
 
     nodemon({
       script: "./bin/www",
       exec: `set NGROK_URL=${url} && node`,
     }).on("start", () => {
-      console.log("The application has started");
-    }).on("restart", files => {
-      console.group("Application restarted due to:")
-      files.forEach(file => console.log(file));
+      console.log("Server has started up");
+    }).on("restart", (files) => {
+      console.group("Application restarted due to:");
+      files.forEach((file) => console.log(`- ${file}`));
       console.groupEnd();
     }).on("quit", () => {
-      console.log("The application has quit, closing ngrok tunnel");
+      console.log("Server has stopped. Closing the Ngrok tunnel");
       ngrok.kill().then(() => process.exit(0));
     });
   })
   .catch((error) => {
-    console.error("Error opening ngrok tunnel: ", error);
+    console.error("Error occurred while opening the server:", error);
     process.exitCode = 1;
   });
