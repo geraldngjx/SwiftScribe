@@ -41,9 +41,19 @@ def transcribe_local_audio(file_path, language):
     # Initialize the translator
     translator = Translator()
 
-    # Translate the transcription
+   # Split the transcription text into chunks
+    chunk_size = 2500
+    chunks = [result["text"][i : i + chunk_size] for i in range(0, len(result["text"]), chunk_size)]
+
+    # Translate each chunk
+    translated_chunks = []
     logger.info(f"Translating the transcription to language: {language}")
-    translated_text = translator.translate(result["text"], language).result
+    for chunk in chunks:
+        translated_text = translator.translate(chunk, language).result
+        translated_chunks.append(translated_text)
+
+    # Concatenate the translated chunks into the final translation
+    translated_text = " ".join(translated_chunks)
 
     logger.info("Translation completed")
 
@@ -61,17 +71,33 @@ def summarize_text(data: TextData):
     logger.info("Summarizing text")
 
     # Determine the length of the input text
-    # text_length = len(data.text)
+    text_length = len(data.text)
 
-    # Adjust the max_length parameter based on the text length
-    # max_length = min(text_length * 2, 1024)  # Set a maximum of 1024 or double the text length, whichever is smaller
+    # Define the chunk size (adjust as needed)
+    chunk_size = 2500
 
-    # Summarize the text with the adjusted max_length
-    summary = summarizer(data.text, do_sample=False)
+    # Initialize an empty list to store the summary chunks
+    summary_chunks = []
+
+    # Process the text in chunks
+    for i in range(0, text_length, chunk_size):
+        chunk = data.text[i : i + chunk_size]
+
+        # Adjust the max_length parameter based on the chunk length
+        max_length = min(len(chunk) * 2, 1024)  # Set a maximum of 1024 or double the chunk length, whichever is smaller
+
+        # Summarize the chunk
+        summary = summarizer(chunk, max_length=max_length, min_length=30, do_sample=False)
+
+        # Append the summary to the list of chunks
+        summary_chunks.append(summary[0]["summary_text"])
+
+    # Concatenate the summary chunks into a single summary
+    final_summary = " ".join(summary_chunks)
 
     logger.info("Text summarization completed")
 
-    return {"summary": summary[0]["summary_text"]}
+    return {"summary": final_summary}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
