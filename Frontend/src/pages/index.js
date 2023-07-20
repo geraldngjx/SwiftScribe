@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 function Dashboard() {
   const [logs, setLogs] = useState([]);
   const [fileCount, setFileCount] = useState(0);
+  const [storageCount, setStorageCount] = useState(0);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -24,6 +25,7 @@ function Dashboard() {
         console.log("DATA: " + data);
         setLogs(data.files);
         setFileCount(data.files.length);
+        setStorageCount(data.totalStorage);
       } catch (error) {
         console.error("Error fetching files:", error);
       }
@@ -58,7 +60,7 @@ function Dashboard() {
       <h1 className="text-4xl font-bold p-8">My Dashboard</h1>
       <div className="flex justify-between pl-8 pr-12">
         <StatisticsContainer title="Files in Database" value={fileCount.toString()} />
-        <StatisticsContainer title="Total Media Transcribed" value={user.media_transcribed} />
+        <StatisticsContainer title="Total Storage Used (MB)" value={fileCount.toString() * 0.02} />
       </div>
       <div className="bg-white p-8">
         <FileContainer logs={logs} onDelete={deleteFile} />

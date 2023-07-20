@@ -1,6 +1,10 @@
 import connectMongo from "../../utils/connectMongo";
 import File from "../../models/file";
 
+const formatBytesToMB = (bytes) => {
+  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+};
+
 export default async function addFile(req, res) {
   const { method } = req;
 
@@ -16,7 +20,13 @@ export default async function addFile(req, res) {
         // Query the files from the MongoDB database
         const files = await File.find({ uid });
 
-        res.json({ files }); // Send the files data back as a response
+        // Calculate the total storage size of all files in bytes
+        let totalStorage = files.reduce((total, file) => total + file.size, 0);
+
+        // Convert total storage size to human-readable format
+        const totalStorageFormatted = formatBytesToMB(totalStorage);
+
+        res.json({ files, totalStorage: totalStorageFormatted }); // Send the files data and total storage as a response
       } catch (error) {
         console.log(error);
         res.json({ error });
