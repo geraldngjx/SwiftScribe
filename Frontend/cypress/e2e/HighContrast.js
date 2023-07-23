@@ -23,13 +23,13 @@ describe("High Contrast Mode", () => {
     cy.get(".edit-page").should("not.have.class", "high-contrast");
 
     // Click on High Contrast Mode Toggle Button
-    cy.contains("label", "High Contrast").parent().find("div").eq(1).click();
+    cy.contains("label", "Normal View").parent().find("div").eq(1).click();
 
     // Check that high contrast mode is now on
     cy.get(".edit-page").should("have.class", "high-contrast");
 
     // Click on Normal View Mode Toggle Button to turn it off again
-    cy.contains("label", "Normal View").parent().find("div").eq(1).click();
+    cy.contains("label", "High Contrast").parent().find("div").eq(1).click();
 
     // Check that high contrast mode is off again
     cy.get(".edit-page").should("not.have.class", "high-contrast");
