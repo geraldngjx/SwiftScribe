@@ -11,8 +11,6 @@ describe("Login", () => {
     // Check if the user is redirected to the home page
     cy.url().should("include", "/");
 
-    // Check if the user is logged in by verifying the presence of a logged-in element
-    // cy.get('a[data-testid="logged-in-element"]').should("be.visible");
     cy.contains("Sign out").should("be.visible");
   });
 
