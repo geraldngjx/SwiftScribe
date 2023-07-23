@@ -21,4 +21,32 @@ https://swift-scribe.vercel.app/
 **Deployment:** Vercel, Ngrok, Uvicorn
 
 ## Note:
-For a complete understanding of the project and its functionalities, please refer to the project's documentation and codebase.  
+For a complete understanding of the project and its functionalities, please refer to the project's documentation and codebase. 
+
+## References:
+_The following links are the sources of resources or education that we have utilised in the development of SwiftScribe. We have written the code we have used ourselves while referencing the sources below, hence there is a possibility that some of our code may bear some level of similarity to the ones below. This is our declaration to abide by NUS Plagiarism Policy._
+
+**Main Reference for the setting up of the Ngrok server powered with Nodemon:**  
+https://philna.sh/blog/2021/03/15/restart-app-not-tunnel-ngrok-nodemon/   
+  
+**Main Reference for the firebase authentication configuration:**  
+https://github.com/sairajchouhan/nextjs-firebase-auth   
+  
+**Main Reference for Vercel Deployment:**  
+https://www.mongodb.com/developer/languages/javascript/nextjs-with-mongodb/   
+  
+**Main Reference for MongoDB integration with NextJS:**  
+https://blog.openreplay.com/a-complete-guide-to-nextjs-plus-mongodb/   
+https://jasonwatmore.com/next-js-11-mongodb-connect-to-mongo-database-with-mongoose   
+  
+**Main Reference for the frontend website (Personal Template):**  
+https://github.com/nreHieW/FRIDAY/tree/main/FRIDAY%20Main%20Website   
+  
+**Main Reference for the powerpoint slide used in the Demo Video:**  
+https://slidesgo.com/theme/product-launch-marketing-plan/   
+  
+**Main Reference for Cypress:**  
+https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Test-Structure   
+  
+**Main Reference for OpenAI Whisper:**  
+https://github.com/openai/whisper   
