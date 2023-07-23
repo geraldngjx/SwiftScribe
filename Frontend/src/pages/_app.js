@@ -1,3 +1,4 @@
+import Head from "next/head";
 import "@/styles/globals.css";
 import Navbar from "../components/navigation/Navbar";
 import { AuthContextProvider } from "../context/AuthContext";
@@ -11,6 +12,9 @@ export default function App({ Component, pageProps }) {
   return (
     <AuthContextProvider>
       <div className="flex">
+        <Head>
+          <title>SwiftScribe</title> {/* Add the title here */}
+        </Head>
         <div className="navbar">
           <Navbar />
         </div>
