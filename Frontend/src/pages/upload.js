@@ -77,7 +77,7 @@ const UploadPage = () => {
       formData.append("text_id", text_id);
 
       const response = await fetch(
-        "https://ba96-101-78-125-97.ngrok-free.app/media/extract",
+        "https://5625-101-78-125-97.ngrok-free.app/media/extract",
         {
           method: "POST",
           body: formData,
@@ -187,7 +187,7 @@ const UploadPage = () => {
       formData.append("text_id", text_id);
   
       const response = await fetch(
-        "https://ba96-101-78-125-97.ngrok-free.app/media/transcription",
+        "https://5625-101-78-125-97.ngrok-free.app/media/transcription",
         {
           method: "POST",
           body: formData,
