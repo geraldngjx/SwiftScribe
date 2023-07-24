@@ -43,7 +43,7 @@ https://jasonwatmore.com/next-js-11-mongodb-connect-to-mongo-database-with-mongo
 https://github.com/nreHieW/FRIDAY/tree/main/FRIDAY%20Main%20Website   
   
 **Main Reference for the powerpoint slide used in the Demo Video:**  
-https://slidesgo.com/theme/product-launch-marketing-plan/   
+https://free-powerpoint-templates-download.com/morph-transition-presentation/     
   
 **Main Reference for Cypress:**  
 https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Test-Structure   
