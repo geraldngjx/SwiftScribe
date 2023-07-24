@@ -155,6 +155,8 @@ const UploadPage = () => {
             clearTimeout(timeout);
             if (!isSummarizationCompleted) {
               clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
+              setNotificationMessage("Failed to extract audio.");
+              setNotificationType("error");
               throw new Error("Transcription and Summarization not completed within the specified duration.");
             }
             resolve();
@@ -257,6 +259,8 @@ const UploadPage = () => {
             clearTimeout(timeout);
             if (!isTranscriptionCompleted) {
               clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
+              setNotificationMessage("Failed to extract audio.");
+              setNotificationType("error");
               throw new Error("Transcription not completed within the specified duration.");
             }
             resolve();
