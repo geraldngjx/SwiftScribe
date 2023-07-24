@@ -77,7 +77,7 @@ const UploadPage = () => {
       formData.append("text_id", text_id);
 
       const response = await fetch(
-        "https://ba96-101-78-125-97.ngrok-free.app/media/extract",
+        "https://5625-101-78-125-97.ngrok-free.app/media/extract",
         {
           method: "POST",
           body: formData,
@@ -155,6 +155,8 @@ const UploadPage = () => {
             clearTimeout(timeout);
             if (!isSummarizationCompleted) {
               clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
+              setNotificationMessage("Failed to extract audio.");
+              setNotificationType("error");
               throw new Error("Transcription and Summarization not completed within the specified duration.");
             }
             resolve();
@@ -185,7 +187,7 @@ const UploadPage = () => {
       formData.append("text_id", text_id);
   
       const response = await fetch(
-        "https://ba96-101-78-125-97.ngrok-free.app/media/transcription",
+        "https://5625-101-78-125-97.ngrok-free.app/media/transcription",
         {
           method: "POST",
           body: formData,
@@ -257,6 +259,8 @@ const UploadPage = () => {
             clearTimeout(timeout);
             if (!isTranscriptionCompleted) {
               clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
+              setNotificationMessage("Failed to extract audio.");
+              setNotificationType("error");
               throw new Error("Transcription not completed within the specified duration.");
             }
             resolve();
