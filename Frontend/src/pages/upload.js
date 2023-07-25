@@ -102,55 +102,64 @@ const UploadPage = () => {
       }
     } catch (error) {
       try {
-        console.log("IN FIRST BLOCK");
+        console.log("In First Block");
       
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 2 * 1000; // Convert to milliseconds
       
         // Wait for 3 times the duration of the video
-        await new Promise((resolve) => setTimeout(resolve, videoDuration));
+        await new Promise((resolve) => setTimeout(resolve, 1));
+
+        console.log("First Timeout Completed");
       
         let summarizedText = "";
         let isSummarizationCompleted = false;
         let counter = 0;
         const startTime = Date.now(); // Record the start time
-      
-        // Start a loop with an interval of 1 minute
-        const interval = setInterval(async () => {
-          try {
-            counter++;
-            console.log("Number of Iterations: " + counter);
-            const response = await fetch("/api/temp", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                purpose: "Summarization",
-                text_id: text_id,
-              }),
-            });
 
-            const elapsedTime = Date.now() - startTime; // Calculate elapsed time
-            console.log("Time Elapsed: " + elapsedTime / 1000 / 60 + "min");
-      
-            if (response.ok) {
-              const data = await response.json();
-      
-              if (data.text) {
-                // Transcription completed, break the loop
-                summarizedText = data.text;
-                isSummarizationCompleted = true;
-                clearInterval(interval);
-              }
-            }
-          } catch (error) {
-            console.error("Error while fetching summary:", error);
-          }
-        }, 60000); // 1 minute interval
+        console.log("Second Promise Created");
       
         // Wait until the transcription is completed or the video duration has passed
         await new Promise((resolve) => {
+
+          console.log("Loop Begins Now");
+
+          // Start a loop with an interval of 1 minute
+          const interval = setInterval(async () => {
+            try {
+              counter++;
+              console.log("Number of Iterations: " + counter);
+              const response = await fetch("/api/temp", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  purpose: "Summarization",
+                  text_id: text_id,
+                }),
+              });
+
+              const elapsedTime = Date.now() - startTime; // Calculate elapsed time
+              console.log("Time Elapsed: " + elapsedTime / 1000 / 60 + "min");
+        
+              if (response.ok) {
+                const data = await response.json();
+        
+                if (data.text) {
+                  // Transcription completed, break the loop
+                  summarizedText = data.text;
+                  isSummarizationCompleted = true;
+                  clearInterval(interval);
+                  clearTimeout(timeout);
+                  resolve();
+                }
+              }
+            } catch (error) {
+              console.error("Error while fetching summary:", error);
+            }
+          }, 60000); // 1 minute interval
+
           const timeout = setTimeout(() => {
             clearTimeout(timeout);
             if (!isSummarizationCompleted) {
@@ -206,55 +215,64 @@ const UploadPage = () => {
       }
     } catch (error) {
       try {
-        console.log("IN FIRST BLOCK");
+        console.log("In First Block");
       
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 2 * 1000; // Convert to milliseconds
       
         // Wait for 3 times the duration of the video
-        await new Promise((resolve) => setTimeout(resolve, videoDuration));
+        await new Promise((resolve) => setTimeout(resolve, videoDuration * 1000));
+
+        console.log("First Timeout Completed");
       
         let transcribedText = "";
         let isTranscriptionCompleted = false;
         let counter = 0;
-        const startTime = Date.now()
-      
-        // Start a loop with an interval of 1 minute
-        const interval = setInterval(async () => {
-          try {
-            counter++;
-            console.log("Number of Iterations: " + counter);
-            const response = await fetch("/api/temp", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                purpose: "Transcription",
-                text_id: text_id,
-              }),
-            });
+        const startTime = Date.now();
 
-            const elapsedTime = Date.now() - startTime; // Calculate elapsed time
-            console.log("Time Elapsed: " + elapsedTime / 1000 / 60 + "min");
-      
-            if (response.ok) {
-              const data = await response.json();
-      
-              if (data.text) {
-                // Transcription completed, break the loop
-                transcribedText = data.text;
-                isTranscriptionCompleted = true;
-                clearInterval(interval);
-              }
-            }
-          } catch (error) {
-            console.error("Error while fetching transcription:", error);
-          }
-        }, 60000); // 1 minute interval
+        console.log("Second Promise Created");
       
         // Wait until the transcription is completed or the video duration has passed
         await new Promise((resolve) => {
+
+          console.log("Loop begins now");
+
+          // Start a loop with an interval of 1 minute
+          const interval = setInterval(async () => {
+            try {
+              counter++;
+              console.log("Number of Iterations: " + counter);
+              const response = await fetch("/api/temp", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  purpose: "Transcription",
+                  text_id: text_id,
+                }),
+              });
+        
+              const elapsedTime = Date.now() - startTime; // Calculate elapsed time
+              console.log("Time Elapsed: " + elapsedTime / 1000 / 60 + "min");
+        
+              if (response.ok) {
+                const data = await response.json();
+        
+                if (data.text) {
+                  // Transcription completed, break the loop and clear the timeout
+                  transcribedText = data.text;
+                  isTranscriptionCompleted = true;
+                  clearInterval(interval);
+                  clearTimeout(timeout);
+                  resolve();
+                }
+              }
+            } catch (error) {
+              console.error("Error while fetching transcription:", error);
+            }
+          }, 60000); // 1 minute interval
+
           const timeout = setTimeout(() => {
             clearTimeout(timeout);
             if (!isTranscriptionCompleted) {
@@ -266,6 +284,8 @@ const UploadPage = () => {
             resolve();
           }, waitDuration);
         });
+
+        console.log("Second Timeout Completed");
       
         if (transcribedText) {
           setNotificationMessage("Transcription Completed Successfully.");
