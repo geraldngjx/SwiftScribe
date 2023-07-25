@@ -22,26 +22,15 @@ export default async function extractTranscript(req, res) {
             return res.status(400).json({ error: "Transcript is empty" });
         } else {
             const text = temp.transcript;
-
-            // You can perform additional actions with the extracted transcript here
         
             return res.json({ text });
         }
     } else {
         if (temp.summary === "__EMPTY__") {
-            if (temp.transcript === "__EMPTY__") {
-                return res.status(400).json({ error: "Transcript and Summary is empty" });
-            } else {
-                const text = temp.transcript;
-
-                // You can perform additional actions with the extracted transcript here
-            
-                return res.json({ text });
-            }
+            return res.status(400).json({ error: "Transcript and Summary is empty" });
+            // }
         } else {
             const text = temp.summary;
-
-            // You can perform additional actions with the extracted summary here
         
             return res.json({ text });
         }
