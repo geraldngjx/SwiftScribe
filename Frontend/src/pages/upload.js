@@ -166,6 +166,7 @@ const UploadPage = () => {
               clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
               setNotificationMessage("Failed to extract audio.");
               setNotificationType("error");
+              setIsLoading(false);
               throw new Error("Transcription and Summarization not completed within the specified duration.");
             }
             resolve();
@@ -178,11 +179,13 @@ const UploadPage = () => {
         } else {
           setNotificationMessage("Failed to extract audio.");
           setNotificationType("error");
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Error while uploading and extracting audio:", error);
         setNotificationMessage("Failed to extract audio.");
         setNotificationType("error");
+        setIsLoading(false);
       }
     }
   };
@@ -279,6 +282,7 @@ const UploadPage = () => {
               clearInterval(interval); // Clear the interval if the video duration has passed without transcription completion
               setNotificationMessage("Failed to extract audio.");
               setNotificationType("error");
+              setIsLoading(false);
               throw new Error("Transcription not completed within the specified duration.");
             }
             resolve();
@@ -293,11 +297,13 @@ const UploadPage = () => {
         } else {
           setNotificationMessage("Failed to extract audio.");
           setNotificationType("error");
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Error while uploading and extracting audio:", error);
         setNotificationMessage("Failed to extract audio.");
         setNotificationType("error");
+        setIsLoading(false);
       }
     }
   };
