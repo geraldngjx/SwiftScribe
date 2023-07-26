@@ -105,10 +105,10 @@ const UploadPage = () => {
         console.log("In First Block");
       
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 2 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
       
         // Wait for 3 times the duration of the video
-        await new Promise((resolve) => setTimeout(resolve, 1));
+        // await new Promise((resolve) => setTimeout(resolve, videoDuration * 1000));
 
         console.log("First Timeout Completed");
       
@@ -221,10 +221,10 @@ const UploadPage = () => {
         console.log("In First Block");
       
         const videoDuration = await getVideoDuration(fileInputRef.current.files[0]);
-        const waitDuration = videoDuration * 2 * 1000; // Convert to milliseconds
+        const waitDuration = videoDuration * 3 * 1000; // Convert to milliseconds
       
         // Wait for 3 times the duration of the video
-        await new Promise((resolve) => setTimeout(resolve, videoDuration * 1000));
+        // await new Promise((resolve) => setTimeout(resolve, videoDuration * 1000));
 
         console.log("First Timeout Completed");
       
