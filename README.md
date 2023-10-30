@@ -7,6 +7,8 @@ SwiftScribe is an innovative web application that transcribes and summarizes vid
 ## Live Deployment:
 https://swift-scribe.vercel.app/
 
+Note: Due to inactivity after Orbital, we have decided to halt our backend servers to prevent incurring additional cost. If you would like a product demonstration, please reach out to us.
+
 ## Key Features:
 **Video uploading and processing:** Users can upload videos, and the application will extract the audio for transcription and summarization.  
 **Speech-to-text transcription:** The application utilizes the Whispers AI model from Hugging Face to convert audio into accurate text transcriptions.  
